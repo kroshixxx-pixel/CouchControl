@@ -9,6 +9,7 @@ from ctypes import wintypes
 import pyautogui
 import pyperclip
 from dotenv import load_dotenv
+from web_server import start_web_server, stop_web_server
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, WebAppInfo
 from telegram.ext import (
     Application,
@@ -331,7 +332,10 @@ def main() -> None:
     if os.name != "nt":
         raise SystemExit("CouchControl Agent рассчитан на Windows 10/11.")
 
-    app = Application.builder().token(TOKEN).build()
+    app = (Application.builder().token(TOKEN)
+           .post_init(start_web_server)
+           .post_shutdown(stop_web_server)
+           .build())
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", myid))
     app.add_handler(CommandHandler("cancel", cancel))
