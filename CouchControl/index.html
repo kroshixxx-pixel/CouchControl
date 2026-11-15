@@ -30,7 +30,7 @@
     <section class="control-panel">
       <div class="panel-title"><div><span class="eyebrow">УПРАВЛЕНИЕ</span><h1 id="mode-title">Тачпад</h1></div><span class="mode-count">01 / 03</span></div>
       <nav class="tabs" aria-label="Режим управления">
-        <button class="tab active" data-mode="touchpad"><span>⌖</span>Тачпад</button>
+        <button class="tab active" data-mode="touchpad"><span>⌖</span>Мышь</button>
         <button class="tab" data-mode="keyboard"><span>⌨</span>Клавиатура</button>
         <button class="tab" data-mode="buttons"><span>◈</span>Кнопки</button>
       </nav>
@@ -41,10 +41,27 @@
           <div class="connection-row"><input id="api-url" type="url" placeholder="https://....trycloudflare.com" inputmode="url"><button id="connect-btn" type="button">Подключить</button></div>
           <small id="connection-status">Сначала запустим защищённый канал на ПК</small>
         </div>
-        <div class="touchpad" id="touchpad">
-          <div class="touch-grid"></div><div class="touch-cross">＋</div>
-          <span>ОБЛАСТЬ ТАЧПАДА</span>
-          <small>Проведи пальцем по области</small>
+        <div class="mouse-pad">
+          <div class="speed-row">
+            <label for="mouse-speed">СКОРОСТЬ</label>
+            <select id="mouse-speed">
+              <option value="14">Медленно</option>
+              <option value="28" selected>Нормально</option>
+              <option value="50">Быстро</option>
+            </select>
+          </div>
+          <div class="direction-grid" aria-label="Направление движения мыши">
+            <button class="direction-btn" data-dx="-1" data-dy="-1" aria-label="Вверх-влево">↖</button>
+            <button class="direction-btn" data-dx="0" data-dy="-1" aria-label="Вверх">↑</button>
+            <button class="direction-btn" data-dx="1" data-dy="-1" aria-label="Вверх-вправо">↗</button>
+            <button class="direction-btn" data-dx="-1" data-dy="0" aria-label="Влево">←</button>
+            <button class="direction-btn stop-btn" data-stop="true" aria-label="Стоп">●</button>
+            <button class="direction-btn" data-dx="1" data-dy="0" aria-label="Вправо">→</button>
+            <button class="direction-btn" data-dx="-1" data-dy="1" aria-label="Вниз-влево">↙</button>
+            <button class="direction-btn" data-dx="0" data-dy="1" aria-label="Вниз">↓</button>
+            <button class="direction-btn" data-dx="1" data-dy="1" aria-label="Вниз-вправо">↘</button>
+          </div>
+          <p class="mouse-help">Удерживай стрелку для непрерывного движения</p>
         </div>
         <div class="mouse-actions">
           <button class="mouse-btn" data-button="left" type="button">ЛЕВАЯ КНОПКА</button>
