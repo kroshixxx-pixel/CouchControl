@@ -2,12 +2,12 @@
   const tg = window.Telegram?.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
   const tabs = [...document.querySelectorAll(".tab")];
-  const titles = {touchpad:"Мышь",keyboard:"Клавиатура",buttons:"Кнопки"};
+  const titles = {touchpad:"Mouse",keyboard:"Keyboard",buttons:"Buttons"};
   const counts = {touchpad:"01 / 03",keyboard:"02 / 03",buttons:"03 / 03"};
   const hints = {
-    touchpad:"Удерживай одну из восьми стрелок, чтобы перемещать курсор на ПК.",
-    keyboard:"Клавиши подключим следующим этапом.",
-    buttons:"Кнопки управления подключим следующим этапом."
+    touchpad:"Hold one of the eight arrows to move the PC cursor.",
+    keyboard:"Keyboard controls will be added in a future update.",
+    buttons:"Action buttons will be added in a future update."
   };
   tabs.forEach(tab => tab.addEventListener("click", () => {
     const mode = tab.dataset.mode;
@@ -22,11 +22,11 @@
   const screenshotStatus = document.getElementById("screenshot-status");
   screenshotButton?.addEventListener("click", () => {
     if (!tg?.initData || typeof tg.sendData !== "function") {
-      screenshotStatus.textContent = "Открой Mini App кнопкой внизу чата с ботом.";
+      screenshotStatus.textContent = "Open the Mini App using the button at the bottom of your bot chat.";
       return;
     }
     screenshotButton.disabled = true;
-    screenshotStatus.textContent = "Отправляем запрос боту…";
+    screenshotStatus.textContent = "Sending request to the bot…";
     tg.sendData(JSON.stringify({action:"screenshot"}));
   });
 
@@ -37,30 +37,30 @@
   if (apiBase) input.value = apiBase;
 
   const request = async (path, payload) => {
-    if (!apiBase || !tg?.initData) throw new Error("Открой Mini App из Telegram и укажи адрес соединения.");
+    if (!apiBase || !tg?.initData) throw new Error("Open the Mini App from Telegram and enter the connection address.");
     const response = await fetch(apiBase + path, {
       method: "POST",
       headers: {"Content-Type":"application/json","X-Telegram-Init-Data":tg.initData},
       body: JSON.stringify(payload)
     });
-    if (!response.ok) throw new Error("Ошибка соединения (" + response.status + ")");
+    if (!response.ok) throw new Error("Connection error (" + response.status + ")");
     return response.json();
   };
 
   connect.addEventListener("click", async () => {
     const value = input.value.trim().replace(/\/$/, "");
     if (!/^https:\/\/[a-z0-9.-]+$/.test(value)) {
-      status.textContent = "Введи HTTPS-адрес Cloudflare Tunnel.";
+      status.textContent = "Enter the HTTPS address of your Cloudflare Tunnel.";
       return;
     }
     try {
       const response = await fetch(value + "/api/health");
-      if (!response.ok) throw new Error("Сервер не ответил");
+      if (!response.ok) throw new Error("The server did not respond");
       apiBase = value;
       localStorage.setItem("couchcontrol_api", apiBase);
-      status.textContent = "Сервер найден. Проверяем Telegram-доступ при первом движении.";
+      status.textContent = "Server found. Telegram access will be verified on the first movement.";
     } catch (_error) {
-      status.textContent = "Не удалось связаться с ПК. Проверь адрес и запущенный туннель.";
+      status.textContent = "Could not reach the PC. Check the address and make sure the tunnel is running.";
     }
   });
 
@@ -120,7 +120,7 @@
   document.querySelectorAll(".key,.action-tile").forEach(button => {
     button.addEventListener("click", () => {
       if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
-      document.getElementById("demo-hint").textContent = "Эта функция будет подключена следующим этапом.";
+      document.getElementById("demo-hint").textContent = "This feature will be added in a future update.";
     });
   });
 })();

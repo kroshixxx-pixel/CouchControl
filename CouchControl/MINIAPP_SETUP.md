@@ -21,7 +21,7 @@ In the official BotFather chat, use `/setdomain` and select your CouchControl bo
 
 ## 3. Update the PC bot
 
-The bot code now has a **📱 Открыть CouchControl** button. The default web address is already set in `bot.py`. Pull the latest repository version to the PC (or copy the updated `CouchControl/bot.py`), then restart CouchControl.
+The bot code now has a **📱 Open CouchControl** button. The default web address is already set in `bot.py`. Pull the latest repository version to the PC (or copy the updated `CouchControl/bot.py`), then restart CouchControl.
 
 Do not put your Telegram bot token in GitHub or in the Mini App files. Keep it only in the local `.env` file on the PC.
 

@@ -1,105 +1,37 @@
-# 🤖 Установка CouchControl — инструкция
+# CouchControl — Installation
 
-CouchControl позволяет управлять своим компьютером Windows через Telegram-бота: мышкой, клавиатурой, громкостью и другими функциями.
+CouchControl lets you control your Windows PC through your personal Telegram bot.
 
-## 1. Подготовка
+## Install
 
-1. Скачай и установи **Python 3.12**: https://www.python.org/downloads/release/python-31210/
-2. При установке поставь галочку `Add Python to PATH`.
-3. Получи ZIP-архив CouchControl от друга.
-4. Распакуй архив в удобное место.
+1. Run `CouchControl-Setup.exe`.
+2. Enter the token for your Telegram bot, created with @BotFather.
+3. Enter your numeric Telegram User ID.
+4. Wait for setup to finish.
+5. Open your bot in Telegram and send `/start`.
 
-## 2. Создание Telegram-бота
+The installer prepares a private Python runtime, installs the required packages and saves your Telegram settings. It does not need to remove or modify other system-wide Python installations.
 
-1. Открой Telegram и найди [@BotFather](https://t.me/BotFather).
-2. Отправь `/newbot`.
-3. Придумай название бота.
-4. Придумай username, заканчивающийся на `bot`.
-5. Скопируй полученный токен. Никому его не показывай!
+The installer offers an option to start CouchControl automatically when you sign in to Windows.
 
-## 3. Установка CouchControl
+## Mini App
 
-1. Открой папку `couchcontrol_bot`.
-2. Нажми на адресную строку папки, напиши `powershell` и нажми Enter.
-3. Выполняй команды по очереди:
+The Mini App interface is in the `CouchControl` folder. The screenshot request is sent to the bot. The touchpad requires a configured HTTPS tunnel to reach the local PC API. Keyboard and action tiles are currently placeholders.
 
-```powershell
-py -3.12 -m venv .venv
-```
+## Stop the bot
 
-Если появится ошибка при активации скриптов, выполни:
+Use the stop option in the Telegram bot menu. After confirmation, CouchControl exits. To connect again, launch CouchControl on the PC using its Start menu or desktop shortcut. Stopping the bot does not shut down Windows.
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-```
+## Requirements
 
-Подтверди клавишей `Y`, затем:
+- 64-bit Windows 10 or Windows 11.
+- Internet access during installation and while using the bot.
+- Your own Telegram bot and its token.
+- Your numeric Telegram User ID.
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
+## Important
 
-## 4. Настройка бота
-
-1. Найди файл `.env.example`.
-2. Скопируй его в ту же папку.
-3. Переименуй копию в `.env`.
-4. Открой `.env` через Блокнот.
-5. В строке `BOT_TOKEN=` вставь свой токен от BotFather.
-6. Оставь `ALLOWED_USER_ID=0`.
-7. Сохрани файл.
-
-## 5. Первый запуск
-
-В PowerShell введи:
-
-```powershell
-python bot.py
-```
-
-Теперь открой своего бота в Telegram и отправь:
-
-`/myid`
-
-Бот пришлёт числовой Telegram ID.
-
-1. Останови программу сочетанием Ctrl+C.
-2. Открой `.env`.
-3. Замени `ALLOWED_USER_ID=0` на свой числовой ID.
-4. Сохрани файл.
-5. Снова запусти:
-
-```powershell
-python bot.py
-```
-
-6. Открой бота и отправь `/start`.
-
-Готово! Можно пользоваться CouchControl.
-
-## 6. Автозапуск Windows
-
-Чтобы бот запускался автоматически при включении компьютера:
-
-1. Открой файл `install_startup.ps1` через Блокнот.
-2. Если скрипт выдаёт ошибку, замени его содержимое исправленной версией от друга.
-3. Сохрани файл.
-4. В PowerShell выполни:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install_startup.ps1
-```
-
-После успешной установки бот будет запускаться автоматически при входе в Windows без открытия консоли.
-
-## 🔐 Важная информация
-
-- У каждого пользователя должен быть собственный Telegram-бот и собственный токен.
-- Не отправляй никому файл `.env`.
-- Не публикуй токен.
-- Не передавай посторонним свой Telegram ID вместе с токеном.
-- Компьютер должен быть включён и не находиться в спящем режиме.
-
-**Приятного использования CouchControl! 🚀**
+- Never share your bot token or publish the `.env` file.
+- The PC must be powered on and connected to the internet for the bot to respond.
+- CouchControl must be running on the PC being controlled.
+- If installation fails, inspect `%TEMP%\\CouchControl-install-diagnostic.log` and, if present, `%TEMP%\\CouchControl-Python-install.log`.
