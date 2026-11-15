@@ -180,7 +180,7 @@ def keyboard_keyboard() -> InlineKeyboardMarkup:
 def volume_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🔉 −", callback_data="volume:down"), InlineKeyboardButton("🔊 +", callback_data="volume:up")],
-        [InlineKeyboardButton("🔇 Mute / unmute", callback_data="volume:mute")],
+        [InlineKeyboardButton("🔇 Вкл. / выкл. звук", callback_data="volume:mute")],
         [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
     ])
 
@@ -242,7 +242,7 @@ async def web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             caption="📸 Снимок экрана ПК через CouchControl",
         )
     except Exception:
-        log.exception("Mini App screenshot failed")
+        log.exception("Ошибка создания снимка экрана через Mini App")
         await update.effective_message.reply_text("Не удалось сделать снимок экрана ПК.")
 
 
@@ -299,14 +299,14 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     pages = {
         "home": ("🛋 CouchControl\nВыберите, чем хотите управлять:", main_keyboard),
-        "mouse": ("🖱 Mouse control\nUse the arrows to move the cursor.", mouse_keyboard),
-        "keyboard": ("⌨️ Keyboard\nTap “Type text”, then send a message. The text will be pasted into the active PC window.", keyboard_keyboard),
-        "volume": ("🔊 Volume control", volume_keyboard),
-        "media": ("🎵 Media controls", media_keyboard),
+        "mouse": ("🖱 Управление мышью\nИспользуйте стрелки, чтобы перемещать курсор.", mouse_keyboard),
+        "keyboard": ("⌨️ Клавиатура\nНажмите «Ввести текст», затем отправьте сообщение. Текст будет вставлен в активное окно на ПК.", keyboard_keyboard),
+        "volume": ("🔊 Управление громкостью", volume_keyboard),
+        "media": ("🎵 Управление мультимедиа", media_keyboard),
         "capture": ("📸 Захват экрана\nВыберите снимок экрана или запись видео.", capture_keyboard),
         "shortcuts": ("⚡ Быстрые клавиши", shortcuts_keyboard),
-        "apps": ("🗂 Launch apps", apps_keyboard),
-        "power": ("⏻ PC power", power_keyboard),
+        "apps": ("🗂 Запуск приложений", apps_keyboard),
+        "power": ("⏻ Питание ПК", power_keyboard),
     }
     if data.startswith("page:"):
         page = data.split(":", 1)[1]
@@ -395,7 +395,7 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             buffer.seek(0)
             await query.message.reply_photo(photo=buffer, caption="📸 Текущий экран ПК")
         except Exception:
-            log.exception("Screenshot failed")
+            log.exception("Ошибка создания снимка экрана")
             await query.message.reply_text("Не удалось сделать снимок экрана.")
         return
 
