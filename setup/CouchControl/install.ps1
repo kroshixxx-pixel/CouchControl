@@ -140,7 +140,7 @@ try {
     }
 
     Write-Host 'Checking installed libraries and local API module...'
-    & $VenvPython -c "import telegram, dotenv, pyautogui, PIL, pyperclip, aiohttp, web_server; print('CouchControl dependencies OK')"
+    & $VenvPython -c "import telegram, dotenv, pyautogui, PIL, pyperclip, aiohttp, cv2, numpy, web_server; print('CouchControl dependencies OK')"
     $moduleExitCode = $LASTEXITCODE
     if ($moduleExitCode -ne 0) {
         throw "CouchControl dependency check failed. Exit code: $moduleExitCode"
