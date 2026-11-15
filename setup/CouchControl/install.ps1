@@ -63,14 +63,37 @@ try {
         }
 
         Write-Host "Installing private Python into: $PythonDir"
-        # Invoke the EXE directly so PowerShell passes each option as a separate argument.
-        & $PythonInstaller '/quiet' 'InstallAllUsers=0' 'PrependPath=0' 'Include_launcher=0' 'Include_test=0' 'Include_pip=1' 'Shortcuts=0' "TargetDir=$PythonDir" "DefaultJustForMeTargetDir=$PythonDir" '/log' $InstallLog
 
-        $pythonInstallExitCode = $LASTEXITCODE
+        # Use Start-Process so the Burn bootstrapper's real process exit code is captured.
+        # If a stale registered bundle selects Uninstall (WixBundleAction=6), let that
+        # maintenance action finish, then invoke the same official installer once more.
+        $pythonArguments = '/quiet InstallAllUsers=0 PrependPath=0 Include_launcher=0 Include_test=0 Include_pip=1 Shortcuts=0 "TargetDir={0}" "DefaultJustForMeTargetDir={0}" /log "{1}"' -f $PythonDir, $InstallLog
+        $pythonProcess = Start-Process -FilePath $PythonInstaller -ArgumentList $pythonArguments -Wait -PassThru -WindowStyle Hidden
+        $pythonInstallExitCode = $pythonProcess.ExitCode
         Write-Host "Python installer exit code: $pythonInstallExitCode"
+
+        $pythonActionWasUninstall = $false
+        if (Test-Path -LiteralPath $InstallLog -PathType Leaf) {
+            $pythonLogText = Get-Content -LiteralPath $InstallLog -Raw
+            $pythonActionWasUninstall = $pythonLogText -match 'Variable: WixBundleAction = 6'
+        }
+
+        $pythonWasInstalled = (Test-Path -LiteralPath $PythonExe -PathType Leaf) -and (Test-Path -LiteralPath $PythonwExe -PathType Leaf)
         if ($pythonInstallExitCode -ne 0) {
             Show-PythonInstallLog
             throw "The official Python installer failed with exit code $pythonInstallExitCode."
+        }
+
+        if (-not $pythonWasInstalled -and $pythonActionWasUninstall) {
+            Write-Warning 'The Python installer removed a stale registered installation instead of installing. Retrying once now that the stale registration has been cleared.'
+            Remove-Item -LiteralPath $InstallLog -Force -ErrorAction SilentlyContinue
+            $pythonProcess = Start-Process -FilePath $PythonInstaller -ArgumentList $pythonArguments -Wait -PassThru -WindowStyle Hidden
+            $pythonInstallExitCode = $pythonProcess.ExitCode
+            Write-Host "Python installer retry exit code: $pythonInstallExitCode"
+            if ($pythonInstallExitCode -ne 0) {
+                Show-PythonInstallLog
+                throw "The official Python installer retry failed with exit code $pythonInstallExitCode."
+            }
         }
 
         # Python 3.12's documented per-user default is the fallback if TargetDir was not honored.
