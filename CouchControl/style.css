@@ -5,3 +5,14 @@
 .connection-row input{min-width:0;flex:1;background:#080f20;border:1px solid var(--line);border-radius:8px;color:#eef2ff;padding:10px;font-size:11px}
 .connection-row button{border:0;border-radius:8px;padding:0 12px;background:linear-gradient(110deg,#456ff0,#8055e9);color:white;font-size:10px;font-weight:700}
 .connection-setup small{display:block;margin-top:7px;color:#8792b2;font-size:9px}
+
+/* Direction-pad mouse controls */
+.mouse-pad{padding:12px;border:1px solid #6476d44a;border-radius:14px;background:linear-gradient(145deg,#182342,#111a32)}
+.speed-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.speed-row label{font-size:8px;letter-spacing:1px;color:var(--muted)}
+.speed-row select{background:#0b1328;border:1px solid var(--line);border-radius:8px;color:#e4e9ff;padding:7px 10px;font-size:10px}
+.direction-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-width:330px;margin:0 auto}
+.direction-btn{aspect-ratio:1;border:1px solid #7185e04d;border-radius:13px;background:linear-gradient(145deg,#26345c,#182443);color:#e4e9ff;font-size:29px;font-weight:500;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:inset 0 1px #ffffff0b,0 4px 10px #050a1b55}
+.direction-btn:active{background:linear-gradient(145deg,#536ee8,#8156e8);transform:scale(.96)}
+.direction-btn.stop-btn{background:linear-gradient(145deg,#514080,#35295d);color:#dcd2ff;font-size:22px}
+.mouse-help{text-align:center;color:#8492b8;font-size:9px;margin:11px 0 0}
