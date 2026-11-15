@@ -369,7 +369,6 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         keys = shortcuts.get(data.split(":", 1)[1])
         if keys:
             pyautogui.hotkey(*keys)
-            await query.answer("Комбинация отправлена")
         return
 
     if data.startswith("volume:")
