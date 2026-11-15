@@ -4,3 +4,4 @@ PyAutoGUI==0.9.54
 Pillow>=10.0.0
 pyperclip==1.9.0
 aiohttp==3.11.18
+opencv-python-headless==4.11.0.86
