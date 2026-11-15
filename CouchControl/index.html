@@ -36,14 +36,19 @@
       </nav>
 
       <section class="mode-view active" id="touchpad-view">
+        <div class="connection-setup">
+          <label for="api-url">АДРЕС ЗАЩИЩЁННОГО СОЕДИНЕНИЯ</label>
+          <div class="connection-row"><input id="api-url" type="url" placeholder="https://....trycloudflare.com" inputmode="url"><button id="connect-btn" type="button">Подключить</button></div>
+          <small id="connection-status">Сначала запустим защищённый канал на ПК</small>
+        </div>
         <div class="touchpad" id="touchpad">
           <div class="touch-grid"></div><div class="touch-cross">＋</div>
           <span>ОБЛАСТЬ ТАЧПАДА</span>
           <small>Проведи пальцем по области</small>
         </div>
         <div class="mouse-actions">
-          <button class="mouse-btn" type="button">ЛЕВАЯ КНОПКА</button>
-          <button class="mouse-btn" type="button">ПРАВАЯ КНОПКА</button>
+          <button class="mouse-btn" data-button="left" type="button">ЛЕВАЯ КНОПКА</button>
+          <button class="mouse-btn" data-button="right" type="button">ПРАВАЯ КНОПКА</button>
         </div>
       </section>
 
