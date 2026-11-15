@@ -152,6 +152,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.effective_message.reply_text(
         "🛋 CouchControl\nВыбери, чем управлять:", reply_markup=main_keyboard()
     )
+    if WEB_APP_URL.startswith("https://"):
+        await update.effective_message.reply_text(
+            "Для открытия Mini App и отправки скриншотов используй кнопку ниже.",
+            reply_markup=webapp_reply_keyboard(),
+        )
 
 
 async def web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
