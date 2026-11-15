@@ -115,7 +115,7 @@ def keyboard_keyboard() -> InlineKeyboardMarkup:
 def volume_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🔉 −", callback_data="volume:down"), InlineKeyboardButton("🔊 +", callback_data="volume:up")],
-        [InlineKeyboardButton("🔇 Mute / unmute", callback_data="volume:mute")],
+        [InlineKeyboardButton("🔇 Вкл. / выкл. звук", callback_data="volume:mute")],
         [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
     ])
 
@@ -178,7 +178,7 @@ async def web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             caption="📸 Снимок экрана ПК через CouchControl",
         )
     except Exception:
-        log.exception("Mini App screenshot failed")
+        log.exception("Ошибка создания снимка экрана через Mini App")
         await update.effective_message.reply_text("Не удалось сделать снимок экрана ПК.")
 
 
@@ -315,8 +315,8 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             buffer.seek(0)
             await query.message.reply_photo(photo=buffer, caption="📸 Текущий экран ПК")
         except Exception:
-            log.exception("Screenshot failed")
-            await query.message.reply_text("Could not take a screenshot.")
+            log.exception("Ошибка создания снимка экрана")
+            await query.message.reply_text("Не удалось сделать снимок экрана.")
         return
 
     if data == "action:status":
