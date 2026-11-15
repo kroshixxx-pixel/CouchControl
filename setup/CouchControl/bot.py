@@ -82,6 +82,7 @@ def main_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("🗂 Приложения", callback_data="page:apps")],
         [InlineKeyboardButton("⏻ Питание", callback_data="page:power"),
          InlineKeyboardButton("ℹ️ Статус", callback_data="action:status")],
+        [InlineKeyboardButton("🛑 Выключить бота", callback_data="action:stop_bot")],
     ])
     return InlineKeyboardMarkup(rows)
 
@@ -429,6 +430,25 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
     if data == "action:status":
         await query.message.reply_text("🟢 CouchControl работает. Компьютер доступен через Telegram.")
+        return
+
+    if data == "action:stop_bot":
+        markup = InlineKeyboardMarkup([
+            [InlineKeyboardButton("Да, выключить бота", callback_data="action:confirm_stop_bot")],
+            [InlineKeyboardButton("Отмена", callback_data="page:home")],
+        ])
+        await query.message.reply_text(
+            "🛑 Остановить CouchControl? Бот отключится от Telegram, "
+            "пока ты не запустишь его снова с компьютера.",
+            reply_markup=markup,
+        )
+        return
+
+    if data == "action:confirm_stop_bot":
+        await query.message.reply_text(
+            "⏹ CouchControl останавливается. Чтобы запустить его снова, открой ярлык CouchControl на компьютере."
+        )
+        context.application.stop_running()
         return
 
     if data in {"power:ask_shutdown", "power:ask_restart"}:
