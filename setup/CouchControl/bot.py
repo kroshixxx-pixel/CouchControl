@@ -16,7 +16,7 @@ import pyautogui
 import pyperclip
 from dotenv import load_dotenv
 from web_server import start_web_server, stop_web_server
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, Update, WebAppInfo
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
@@ -85,14 +85,6 @@ def main_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("🛑 Выключить бота", callback_data="action:stop_bot")],
     ])
     return InlineKeyboardMarkup(rows)
-
-
-def webapp_reply_keyboard() -> ReplyKeyboardMarkup:
-    return ReplyKeyboardMarkup(
-        [[KeyboardButton("📱 Открыть CouchControl", web_app=WebAppInfo(url=WEB_APP_URL))]],
-        resize_keyboard=True,
-        is_persistent=True,
-    )
 
 
 def capture_keyboard() -> InlineKeyboardMarkup:
@@ -220,6 +212,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         )
         return
     context.user_data["awaiting_text"] = False
+    # Remove the persistent Mini App reply keyboard left by older versions.
+    await update.effective_message.reply_text(
+        "Кнопка открытия Mini App убрана.", reply_markup=ReplyKeyboardRemove()
+    )
     await update.effective_message.reply_text(
         "🛋 CouchControl\nВыбери, чем управлять:", reply_markup=main_keyboard()
     )
