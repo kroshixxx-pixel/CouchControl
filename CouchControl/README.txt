@@ -1,105 +1,81 @@
-# 🤖 Установка CouchControl — инструкция
+# 🤖 CouchControl — manual setup guide (legacy)
 
-CouchControl позволяет управлять своим компьютером Windows через Telegram-бота: мышкой, клавиатурой, громкостью и другими функциями.
+This guide describes the older manual source-based setup. For the current installer workflow, use the repository's [README](../README.md) or [English README](../README.en.md), and build the installer from `setup/CouchControl/`.
 
-## 1. Подготовка
+## 1. Prepare
 
-1. Скачай и установи **Python 3.12**: https://www.python.org/downloads/release/python-31210/
-2. При установке поставь галочку `Add Python to PATH`.
-3. Получи ZIP-архив CouchControl от друга.
-4. Распакуй архив в удобное место.
+1. Install Python 3.12 if you are using this legacy source layout: https://www.python.org/downloads/release/python-31210/
+2. If required by your setup, enable **Add Python to PATH**.
+3. Download the CouchControl source archive.
+4. Extract it to a convenient folder.
 
-## 2. Создание Telegram-бота
+## 2. Create a Telegram bot
 
-1. Открой Telegram и найди [@BotFather](https://t.me/BotFather).
-2. Отправь `/newbot`.
-3. Придумай название бота.
-4. Придумай username, заканчивающийся на `bot`.
-5. Скопируй полученный токен. Никому его не показывай!
+1. Open Telegram and find [@BotFather](https://t.me/BotFather).
+2. Send `/newbot`.
+3. Choose a display name for your bot.
+4. Choose a username ending in `bot`.
+5. Copy the token and keep it private.
 
-## 3. Установка CouchControl
+## 3. Install dependencies
 
-1. Открой папку `couchcontrol_bot`.
-2. Нажми на адресную строку папки, напиши `powershell` и нажми Enter.
-3. Выполняй команды по очереди:
+Open PowerShell in the source folder and run:
 
 ```powershell
 py -3.12 -m venv .venv
 ```
 
-Если появится ошибка при активации скриптов, выполни:
+If PowerShell blocks activation scripts, run:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-Подтверди клавишей `Y`, затем:
+Confirm with `Y`, then run:
 
 ```powershell
-.\.venv\Scripts\Activate.ps1
+.\\.venv\\Scripts\\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## 4. Настройка бота
+## 4. Configure the bot
 
-1. Найди файл `.env.example`.
-2. Скопируй его в ту же папку.
-3. Переименуй копию в `.env`.
-4. Открой `.env` через Блокнот.
-5. В строке `BOT_TOKEN=` вставь свой токен от BotFather.
-6. Оставь `ALLOWED_USER_ID=0`.
-7. Сохрани файл.
+1. Copy `.env.example` to a new file named `.env`.
+2. Open `.env` in a text editor.
+3. Put your BotFather token after `BOT_TOKEN=`.
+4. Keep `ALLOWED_USER_ID=0` for the first launch.
+5. Save the file.
 
-## 5. Первый запуск
+## 5. First launch
 
-В PowerShell введи:
+Run:
 
 ```powershell
 python bot.py
 ```
 
-Теперь открой своего бота в Telegram и отправь:
+Open your bot in Telegram and send `/myid`. The bot replies with your numeric Telegram user ID.
 
-`/myid`
-
-Бот пришлёт числовой Telegram ID.
-
-1. Останови программу сочетанием Ctrl+C.
-2. Открой `.env`.
-3. Замени `ALLOWED_USER_ID=0` на свой числовой ID.
-4. Сохрани файл.
-5. Снова запусти:
+1. Stop the program with Ctrl+C.
+2. Open `.env`.
+3. Replace `ALLOWED_USER_ID=0` with your numeric ID.
+4. Save the file and start the bot again:
 
 ```powershell
 python bot.py
 ```
 
-6. Открой бота и отправь `/start`.
+5. Send `/start` to the bot.
 
-Готово! Можно пользоваться CouchControl.
+## 6. Windows startup
 
-## 6. Автозапуск Windows
+The current installer can create a Windows sign-in startup entry. Prefer that option over manually editing startup scripts.
 
-Чтобы бот запускался автоматически при включении компьютера:
+## Security notes
 
-1. Открой файл `install_startup.ps1` через Блокнот.
-2. Если скрипт выдаёт ошибку, замени его содержимое исправленной версией от друга.
-3. Сохрани файл.
-4. В PowerShell выполни:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\install_startup.ps1
-```
-
-После успешной установки бот будет запускаться автоматически при входе в Windows без открытия консоли.
-
-## 🔐 Важная информация
-
-- У каждого пользователя должен быть собственный Telegram-бот и собственный токен.
-- Не отправляй никому файл `.env`.
-- Не публикуй токен.
-- Не передавай посторонним свой Telegram ID вместе с токеном.
-- Компьютер должен быть включён и не находиться в спящем режиме.
-
-**Приятного использования CouchControl! 🚀**
+- Use your own Telegram bot and token.
+- Never share or publish the `.env` file.
+- Do not publish your bot token.
+- Keep your Telegram account protected.
+- The PC must be powered on and not sleeping for the bot to respond.
