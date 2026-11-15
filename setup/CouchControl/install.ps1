@@ -18,6 +18,13 @@ $DiagnosticLog = Join-Path $env:TEMP 'CouchControl-install-diagnostic.log'
 
 try { Start-Transcript -Path $DiagnosticLog -Force | Out-Null } catch {}
 
+function Show-PythonInstallLog {
+    if (Test-Path -LiteralPath $InstallLog -PathType Leaf) {
+        Write-Host 'Last lines from the official Python installation log:'
+        Get-Content -LiteralPath $InstallLog -Tail 60 | ForEach-Object { Write-Host $_ }
+    }
+}
+
 try {
     Write-Host 'CouchControl setup: checking project files...'
     foreach ($requiredFile in @($Requirements, $BotFile, $WebServerFile)) {
@@ -26,8 +33,9 @@ try {
         }
     }
 
-    if (-not ((Test-Path -LiteralPath $PythonExe) -and (Test-Path -LiteralPath $PythonwExe))) {
+    if (-not ((Test-Path -LiteralPath $PythonExe -PathType Leaf) -and (Test-Path -LiteralPath $PythonwExe -PathType Leaf))) {
         Write-Host "Preparing private Python $PythonVersion runtime..."
+        # This folder belongs to CouchControl; do not touch the user's other Python installs.
         if (Test-Path -LiteralPath $PythonDir) {
             Remove-Item -LiteralPath $PythonDir -Recurse -Force
         }
@@ -45,32 +53,57 @@ try {
             throw "Downloaded Python installer looks incomplete ($($download.Length) bytes)."
         }
 
+        $signature = Get-AuthenticodeSignature -FilePath $PythonInstaller
+        if ($signature.Status -ne 'Valid') {
+            throw "The downloaded Python installer signature is not valid: $($signature.Status)."
+        }
+
         if (Test-Path -LiteralPath $InstallLog) {
             Remove-Item -LiteralPath $InstallLog -Force
         }
 
-        $installerArguments = '/quiet InstallAllUsers=0 PrependPath=0 Include_launcher=0 Include_test=0 Include_pip=1 Shortcuts=0 TargetDir="' + $PythonDir + '" /log "' + $InstallLog + '"'
         Write-Host "Installing private Python into: $PythonDir"
-        $pythonProcess = Start-Process -FilePath $PythonInstaller -ArgumentList $installerArguments -Wait -PassThru -WindowStyle Hidden
-        if ($null -eq $pythonProcess) {
-            throw 'Windows did not return a process result from the Python installer.'
+        # Invoke the EXE directly so PowerShell passes each option as a separate argument.
+        & $PythonInstaller '/quiet' 'InstallAllUsers=0' 'PrependPath=0' 'Include_launcher=0' 'Include_test=0' 'Include_pip=1' 'Shortcuts=0' "TargetDir=$PythonDir" "DefaultJustForMeTargetDir=$PythonDir" '/log' $InstallLog
+
+        $pythonInstallExitCode = $LASTEXITCODE
+        Write-Host "Python installer exit code: $pythonInstallExitCode"
+        if ($pythonInstallExitCode -ne 0) {
+            Show-PythonInstallLog
+            throw "The official Python installer failed with exit code $pythonInstallExitCode."
         }
 
-        Write-Host "Python installer exit code: $($pythonProcess.ExitCode)"
-        if ($pythonProcess.ExitCode -ne 0) {
-            if (Test-Path -LiteralPath $InstallLog) {
-                Write-Host 'Last lines from Python installer log:'
-                Get-Content -LiteralPath $InstallLog -Tail 80 | ForEach-Object { Write-Host $_ }
+        # Python 3.12's documented per-user default is the fallback if TargetDir was not honored.
+        $defaultPythonDir = Join-Path $env:LOCALAPPDATA 'Programs\Python\Python312'
+        $candidateDirs = @($PythonDir, $defaultPythonDir)
+        $foundPythonDir = $null
+        foreach ($candidateDir in $candidateDirs) {
+            $candidateExe = Join-Path $candidateDir 'python.exe'
+            $candidateWExe = Join-Path $candidateDir 'pythonw.exe'
+            if ((Test-Path -LiteralPath $candidateExe -PathType Leaf) -and (Test-Path -LiteralPath $candidateWExe -PathType Leaf)) {
+                $foundPythonDir = $candidateDir
+                break
             }
-            throw "Python installer failed with exit code $($pythonProcess.ExitCode)."
+        }
+
+        if (-not $foundPythonDir) {
+            Show-PythonInstallLog
+            throw "Python reported success but neither the requested folder nor the standard per-user folder contains python.exe and pythonw.exe. Expected: $PythonDir"
+        }
+
+        if ($foundPythonDir -ne $PythonDir) {
+            Write-Warning "Python was installed in its standard per-user folder instead: $foundPythonDir"
+            $PythonDir = $foundPythonDir
+            $PythonExe = Join-Path $PythonDir 'python.exe'
+            $PythonwExe = Join-Path $PythonDir 'pythonw.exe'
         }
     }
 
     if (-not (Test-Path -LiteralPath $PythonExe -PathType Leaf)) {
-        throw "Private Python was not found at: $PythonExe"
+        throw "Private Python executable is missing: $PythonExe"
     }
     if (-not (Test-Path -LiteralPath $PythonwExe -PathType Leaf)) {
-        throw "Private pythonw.exe was not found at: $PythonwExe"
+        throw "Private Python windowless executable is missing: $PythonwExe"
     }
 
     Write-Host 'Checking private Python...'
@@ -86,31 +119,29 @@ try {
     }
     & $PythonExe -m venv $VenvDir
     $venvExitCode = $LASTEXITCODE
-    if ($venvExitCode -ne 0 -or -not (Test-Path -LiteralPath $VenvPython -PathType Leaf)) {
-        throw "Could not create .venv. Exit code: $venvExitCode"
-    }
-    if (-not (Test-Path -LiteralPath $VenvPythonw -PathType Leaf)) {
-        throw 'The virtual environment does not contain pythonw.exe.'
+    if ($venvExitCode -ne 0 -or -not (Test-Path -LiteralPath $VenvPython -PathType Leaf) -or -not (Test-Path -LiteralPath $VenvPythonw -PathType Leaf)) {
+        throw "Could not create the private virtual environment. Exit code: $venvExitCode"
     }
 
-    Write-Host 'Installing Python packages...'
-    & $VenvPython -m pip install --disable-pip-version-check --upgrade pip
-    $pipExitCode = $LASTEXITCODE
-    if ($pipExitCode -ne 0) {
-        throw "Could not upgrade pip. Exit code: $pipExitCode"
-    }
-
-    & $VenvPython -m pip install --disable-pip-version-check -r $Requirements
+    Write-Host 'Installing CouchControl dependencies...'
+    & $VenvPython -m pip install --disable-pip-version-check --retries 3 --timeout 30 -r $Requirements
     $dependenciesExitCode = $LASTEXITCODE
     if ($dependenciesExitCode -ne 0) {
         throw "Could not install requirements.txt. Exit code: $dependenciesExitCode"
     }
 
-    Write-Host 'Checking CouchControl modules...'
-    & $VenvPython -c "import telegram, dotenv, pyautogui, PIL, pyperclip, aiohttp; import web_server; import bot; print('CouchControl modules OK')"
+    Write-Host 'Checking Python syntax...'
+    & $VenvPython -m compileall -q -f $BotFile $WebServerFile
+    $syntaxExitCode = $LASTEXITCODE
+    if ($syntaxExitCode -ne 0) {
+        throw "CouchControl Python syntax check failed. Exit code: $syntaxExitCode"
+    }
+
+    Write-Host 'Checking installed libraries and local API module...'
+    & $VenvPython -c "import telegram, dotenv, pyautogui, PIL, pyperclip, aiohttp, web_server; print('CouchControl dependencies OK')"
     $moduleExitCode = $LASTEXITCODE
     if ($moduleExitCode -ne 0) {
-        throw "CouchControl module check failed. Exit code: $moduleExitCode"
+        throw "CouchControl dependency check failed. Exit code: $moduleExitCode"
     }
 
     Write-Host 'CouchControl installation completed successfully.'
@@ -122,7 +153,7 @@ catch {
     Write-Host 'COUCHCONTROL INSTALLATION FAILED:' -ForegroundColor Red
     Write-Host $_.Exception.Message -ForegroundColor Red
     Write-Host "Diagnostic log: $DiagnosticLog" -ForegroundColor Yellow
-    if (Test-Path -LiteralPath $InstallLog) {
+    if (Test-Path -LiteralPath $InstallLog -PathType Leaf) {
         Write-Host "Python installer log: $InstallLog" -ForegroundColor Yellow
     }
     exit 1
