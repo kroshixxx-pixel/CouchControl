@@ -1,5 +1,5 @@
 #define MyAppName "CouchControl"
-#define MyAppVersion "1.0.9"
+#define MyAppVersion "1.0.10"
 #define MyAppPublisher "CouchControl"
 
 [Setup]
