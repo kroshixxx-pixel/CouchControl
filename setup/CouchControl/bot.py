@@ -5,6 +5,11 @@ import logging
 import os
 import subprocess
 import ctypes
+import tempfile
+import time
+
+import cv2
+import numpy as np
 from ctypes import wintypes
 
 import pyautogui
@@ -71,9 +76,10 @@ def main_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("🖱 Мышка", callback_data="page:mouse"),
          InlineKeyboardButton("⌨️ Клавиатура", callback_data="page:keyboard")],
         [InlineKeyboardButton("🔊 Громкость", callback_data="page:volume"),
-         InlineKeyboardButton("🎵 Медиа", callback_data="page:media")],
-        [InlineKeyboardButton("📸 Скриншот", callback_data="action:screenshot"),
-         InlineKeyboardButton("🗂 Приложения", callback_data="page:apps")],
+         InlineKeyboardButton("🎵 Плеер", callback_data="page:media")],
+        [InlineKeyboardButton("⚡ Комбинации", callback_data="page:shortcuts"),
+         InlineKeyboardButton("📸 Медиа", callback_data="page:capture")],
+        [InlineKeyboardButton("🗂 Приложения", callback_data="page:apps")],
         [InlineKeyboardButton("⏻ Питание", callback_data="page:power"),
          InlineKeyboardButton("ℹ️ Статус", callback_data="action:status")],
     ])
@@ -86,6 +92,70 @@ def webapp_reply_keyboard() -> ReplyKeyboardMarkup:
         resize_keyboard=True,
         is_persistent=True,
     )
+
+
+def capture_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("📸 Сделать скриншот", callback_data="action:screenshot")],
+        [InlineKeyboardButton("🎥 Записать 15 секунд", callback_data="action:record_video")],
+        [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
+    ])
+
+
+def shortcuts_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("Alt + F4 — закрыть окно", callback_data="shortcut:alt_f4")],
+        [InlineKeyboardButton("Win + D — рабочий стол", callback_data="shortcut:win_d")],
+        [InlineKeyboardButton("Win + I — параметры", callback_data="shortcut:win_i")],
+        [InlineKeyboardButton("Ctrl + Shift + Esc — диспетчер задач", callback_data="shortcut:taskmgr")],
+        [InlineKeyboardButton("Alt + Tab — сменить окно", callback_data="shortcut:alt_tab")],
+        [InlineKeyboardButton("Win + E — проводник", callback_data="shortcut:win_e")],
+        [InlineKeyboardButton("Win + R — выполнить", callback_data="shortcut:win_r")],
+        [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
+    ])
+
+
+def record_screen_video(duration: int = 15) -> str:
+    """Capture the desktop for a fixed period and return an MP4 file path."""
+    screenshot = pyautogui.screenshot()
+    width, height = screenshot.size
+    scale = min(1.0, 1280 / width)
+    out_width = max(2, int(width * scale) // 2 * 2)
+    out_height = max(2, int(height * scale) // 2 * 2)
+    fps = 8
+    file_handle = tempfile.NamedTemporaryFile(prefix="couchcontrol-", suffix=".mp4", delete=False)
+    video_path = file_handle.name
+    file_handle.close()
+    writer = cv2.VideoWriter(
+        video_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (out_width, out_height)
+    )
+    if not writer.isOpened():
+        writer.release()
+        os.remove(video_path)
+        raise RuntimeError("Не удалось создать MP4-видео.")
+
+    try:
+        deadline = time.monotonic() + duration
+        interval = 1.0 / fps
+        while time.monotonic() < deadline:
+            frame_start = time.monotonic()
+            frame = np.array(pyautogui.screenshot())
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            if (out_width, out_height) != (width, height):
+                frame = cv2.resize(frame, (out_width, out_height), interpolation=cv2.INTER_AREA)
+            writer.write(frame)
+            remaining = interval - (time.monotonic() - frame_start)
+            if remaining > 0:
+                time.sleep(remaining)
+    except Exception:
+        writer.release()
+        try:
+            os.remove(video_path)
+        except OSError:
+            pass
+        raise
+    writer.release()
+    return video_path
 
 
 def back_keyboard() -> InlineKeyboardMarkup:
@@ -238,7 +308,9 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "mouse": ("🖱 Управление мышью\nНажимай стрелки для перемещения курсора.", mouse_keyboard),
         "keyboard": ("⌨️ Клавиатура\nНажми «Ввести текст», затем отправь сообщение. Текст будет вставлен в активное окно ПК.", keyboard_keyboard),
         "volume": ("🔊 Управление громкостью", volume_keyboard),
-        "media": ("🎵 Управление мультимедиа", media_keyboard),
+        "media": ("🎵 Управление плеером", media_keyboard),
+        "capture": ("📸 Медиа\nВыбери скриншот или запись экрана.", capture_keyboard),
+        "shortcuts": ("⚡ Быстрые комбинации клавиш", shortcuts_keyboard),
         "apps": ("🗂 Запуск приложений", apps_keyboard),
         "power": ("⏻ Питание компьютера", power_keyboard),
     }
@@ -284,7 +356,23 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await query.message.reply_text("✍️ Отправь следующим сообщением текст, который нужно вставить на ПК. Для отмены — /cancel.")
         return
 
-    if data.startswith("volume:"):
+    if data.startswith("shortcut:"):
+        shortcuts = {
+            "alt_f4": ("alt", "f4"),
+            "win_d": ("win", "d"),
+            "win_i": ("win", "i"),
+            "taskmgr": ("ctrl", "shift", "esc"),
+            "alt_tab": ("alt", "tab"),
+            "win_e": ("win", "e"),
+            "win_r": ("win", "r"),
+        }
+        keys = shortcuts.get(data.split(":", 1)[1])
+        if keys:
+            pyautogui.hotkey(*keys)
+            await query.answer("Комбинация отправлена")
+        return
+
+    if data.startswith("volume:")
         action = data.split(":", 1)[1]
         press_vk({"up": VK["volume_up"], "down": VK["volume_down"], "mute": VK["volume_mute"]}[action])
         return
@@ -317,6 +405,33 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         except Exception:
             log.exception("Screenshot failed")
             await query.message.reply_text("Не удалось сделать скриншот.")
+        return
+
+    if data == "action:record_video":
+        status_message = await query.message.reply_text(
+            "🎥 Записываю экран 15 секунд. После записи пришлю MP4 сюда."
+        )
+        video_path = None
+        try:
+            video_path = await asyncio.to_thread(record_screen_video, 15)
+            with open(video_path, "rb") as video_file:
+                await query.message.reply_video(
+                    video=video_file,
+                    caption="🎥 Запись экрана — 15 секунд",
+                    supports_streaming=True,
+                )
+            await status_message.edit_text("✅ Видео отправлено.")
+        except Exception:
+            log.exception("Screen recording failed")
+            await status_message.edit_text(
+                "Не удалось записать или отправить видео. Проверь свободное место и повтори попытку."
+            )
+        finally:
+            if video_path and os.path.exists(video_path):
+                try:
+                    os.remove(video_path)
+                except OSError:
+                    log.warning("Could not remove temporary video: %s", video_path)
         return
 
     if data == "action:status":
