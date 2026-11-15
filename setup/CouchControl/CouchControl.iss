@@ -38,7 +38,7 @@ Name: "{autodesktop}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe";
 Name: "{userstartup}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe"; Parameters: """{app}\bot.py"""; WorkingDir: "{app}"; Tasks: autostart
 
 [Run]
-Filename: "{app}\\.venv\\Scripts\\pythonw.exe"; Parameters: """{app}\\bot.py"""; WorkingDir: "{app}"; Description: "Запустить CouchControl сейчас"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\.venv\Scripts\pythonw.exe"; Parameters: """{app}\bot.py"""; WorkingDir: "{app}"; Description: "Запустить CouchControl сейчас"; Flags: nowait postinstall skipifsilent
 
 [Code]
 var
