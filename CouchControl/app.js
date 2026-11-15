@@ -55,7 +55,7 @@
     }
     try {
       const response = await fetch(value + "/api/health");
-      if (!response.ok) throw new Error("Сервер не ответил");
+      if (!response.ok) throw new Error("The server did not respond");
       apiBase = value;
       localStorage.setItem("couchcontrol_api", apiBase);
       status.textContent = "Server found. Telegram access will be verified on the first movement.";
