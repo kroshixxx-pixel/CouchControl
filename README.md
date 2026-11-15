@@ -1,6 +1,6 @@
 # CouchControl
 
-**English version: [README.en.md](README.en.md).**
+**Английская версия: [CouchControl_en](https://github.com/kroshixxx-pixel/CouchControl_en).**
 
 **Управление собственным Windows-ПК через личного Telegram-бота.**
 
