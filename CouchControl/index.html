@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -13,81 +13,81 @@
     <header class="topbar">
       <div class="brand-mark">C</div>
       <div class="brand"><strong>CouchControl</strong><span>REMOTE CONSOLE</span></div>
-      <div class="connection"><i></i><span>ДЕМО</span></div>
+      <div class="connection"><i></i><span>DEMO</span></div>
     </header>
 
     <section class="screen-card">
-      <div class="screen-head"><span>ЭКРАН КОМПЬЮТЕРА</span><span class="live-dot">● PREVIEW</span></div>
+      <div class="screen-head"><span>PC SCREEN</span><span class="live-dot">● PREVIEW</span></div>
       <div class="screen screenshot-screen">
         <div class="screen-glow"></div>
         <div class="monitor-icon"><span></span></div>
-        <strong>Скриншот экрана ПК</strong>
-        <p>Получишь изображение прямо в чате с ботом</p>
-        <button id="send-screenshot" class="screenshot-btn" type="button">📸 Сделать скриншот</button>
-        <small id="screenshot-status">Отправка через Telegram</small>
+        <strong>PC screen screenshot</strong>
+        <p>The image will be sent directly to your bot chat</p>
+        <button id="send-screenshot" class="screenshot-btn" type="button">📸 Take screenshot</button>
+        <small id="screenshot-status">Sent via Telegram</small>
       </div>
-      <div class="screen-foot"><span><b></b> Скриншот по запросу</span><span>1 нажатие</span></div>
+      <div class="screen-foot"><span><b></b> On-demand screenshot</span><span>1 нажатие</span></div>
     </section>
 
     <section class="control-panel">
-      <div class="panel-title"><div><span class="eyebrow">УПРАВЛЕНИЕ</span><h1 id="mode-title">Тачпад</h1></div><span class="mode-count">01 / 03</span></div>
-      <nav class="tabs" aria-label="Режим управления">
-        <button class="tab active" data-mode="touchpad"><span>⌖</span>Мышь</button>
-        <button class="tab" data-mode="keyboard"><span>⌨</span>Клавиатура</button>
-        <button class="tab" data-mode="buttons"><span>◈</span>Кнопки</button>
+      <div class="panel-title"><div><span class="eyebrow">CONTROL</span><h1 id="mode-title">Touchpad</h1></div><span class="mode-count">01 / 03</span></div>
+      <nav class="tabs" aria-label="Control mode">
+        <button class="tab active" data-mode="touchpad"><span>⌖</span>Mouse</button>
+        <button class="tab" data-mode="keyboard"><span>⌨</span>Keyboard</button>
+        <button class="tab" data-mode="buttons"><span>◈</span>Buttons</button>
       </nav>
 
       <section class="mode-view active" id="touchpad-view">
         <div class="connection-setup">
-          <label for="api-url">АДРЕС ЗАЩИЩЁННОГО СОЕДИНЕНИЯ</label>
-          <div class="connection-row"><input id="api-url" type="url" placeholder="https://....trycloudflare.com" inputmode="url"><button id="connect-btn" type="button">Подключить</button></div>
-          <small id="connection-status">Сначала запустим защищённый канал на ПК</small>
+          <label for="api-url">SECURE CONNECTION ADDRESS</label>
+          <div class="connection-row"><input id="api-url" type="url" placeholder="https://....trycloudflare.com" inputmode="url"><button id="connect-btn" type="button">Connect</button></div>
+          <small id="connection-status">Start the secure connection on your PC first</small>
         </div>
         <div class="mouse-pad">
           <div class="speed-row">
-            <label for="mouse-speed">СКОРОСТЬ</label>
+            <label for="mouse-speed">SPEED</label>
             <select id="mouse-speed">
-              <option value="14">Медленно</option>
-              <option value="28" selected>Нормально</option>
-              <option value="50">Быстро</option>
+              <option value="14">Slow</option>
+              <option value="28" selected>Normal</option>
+              <option value="50">Fast</option>
             </select>
           </div>
-          <div class="direction-grid" aria-label="Направление движения мыши">
-            <button class="direction-btn" data-dx="-1" data-dy="-1" aria-label="Вверх-влево">↖</button>
-            <button class="direction-btn" data-dx="0" data-dy="-1" aria-label="Вверх">↑</button>
-            <button class="direction-btn" data-dx="1" data-dy="-1" aria-label="Вверх-вправо">↗</button>
-            <button class="direction-btn" data-dx="-1" data-dy="0" aria-label="Влево">←</button>
-            <button class="direction-btn stop-btn" data-stop="true" aria-label="Стоп">●</button>
-            <button class="direction-btn" data-dx="1" data-dy="0" aria-label="Вправо">→</button>
-            <button class="direction-btn" data-dx="-1" data-dy="1" aria-label="Вниз-влево">↙</button>
-            <button class="direction-btn" data-dx="0" data-dy="1" aria-label="Вниз">↓</button>
-            <button class="direction-btn" data-dx="1" data-dy="1" aria-label="Вниз-вправо">↘</button>
+          <div class="direction-grid" aria-label="Mouse movement direction">
+            <button class="direction-btn" data-dx="-1" data-dy="-1" aria-label="Up-left">↖</button>
+            <button class="direction-btn" data-dx="0" data-dy="-1" aria-label="Up">↑</button>
+            <button class="direction-btn" data-dx="1" data-dy="-1" aria-label="Up-right">↗</button>
+            <button class="direction-btn" data-dx="-1" data-dy="0" aria-label="Left">←</button>
+            <button class="direction-btn stop-btn" data-stop="true" aria-label="Stop">●</button>
+            <button class="direction-btn" data-dx="1" data-dy="0" aria-label="Right">→</button>
+            <button class="direction-btn" data-dx="-1" data-dy="1" aria-label="Down-left">↙</button>
+            <button class="direction-btn" data-dx="0" data-dy="1" aria-label="Down">↓</button>
+            <button class="direction-btn" data-dx="1" data-dy="1" aria-label="Down-right">↘</button>
           </div>
-          <p class="mouse-help">Удерживай стрелку для непрерывного движения</p>
+          <p class="mouse-help">Hold an arrow to keep moving</p>
         </div>
         <div class="mouse-actions">
-          <button class="mouse-btn" data-button="left" type="button">ЛЕВАЯ КНОПКА</button>
-          <button class="mouse-btn" data-button="right" type="button">ПРАВАЯ КНОПКА</button>
+          <button class="mouse-btn" data-button="left" type="button">LEFT CLICK</button>
+          <button class="mouse-btn" data-button="right" type="button">RIGHT CLICK</button>
         </div>
       </section>
 
       <section class="mode-view" id="keyboard-view">
-        <div class="keyboard-note">Клавиатура появится здесь после подключения ПК</div>
+        <div class="keyboard-note">Keyboard появится здесь после подключения ПК</div>
         <div class="key-row"><button class="key">Esc</button><button class="key">Tab</button><button class="key wide">⌫</button><button class="key">↵</button></div>
-        <div class="key-row"><button class="key">Ctrl</button><button class="key">Alt</button><button class="key space">Пробел</button></div>
+        <div class="key-row"><button class="key">Ctrl</button><button class="key">Alt</button><button class="key space">Space</button></div>
       </section>
 
       <section class="mode-view" id="buttons-view">
         <div class="action-grid">
-          <button class="action-tile"><span>◀</span><b>Назад</b></button>
-          <button class="action-tile"><span>Ⅱ</span><b>Пауза</b></button>
-          <button class="action-tile"><span>▶</span><b>Воспроизвести</b></button>
-          <button class="action-tile"><span>🔊</span><b>Громкость</b></button>
-          <button class="action-tile"><span>⌂</span><b>Рабочий стол</b></button>
-          <button class="action-tile"><span>⏻</span><b>Питание</b></button>
+          <button class="action-tile"><span>◀</span><b>Back</b></button>
+          <button class="action-tile"><span>Ⅱ</span><b>Pause</b></button>
+          <button class="action-tile"><span>▶</span><b>Play</b></button>
+          <button class="action-tile"><span>🔊</span><b>Volume</b></button>
+          <button class="action-tile"><span>⌂</span><b>Desktop</b></button>
+          <button class="action-tile"><span>⏻</span><b>Power</b></button>
         </div>
       </section>
-      <p class="demo-hint" id="demo-hint">Интерфейс готов. Управление ПК пока не подключено.</p>
+      <p class="demo-hint" id="demo-hint">The interface is ready. PC control is not connected yet.</p>
     </section>
     <footer>COUCHCONTROL <span>•</span> CONTROL FROM ANYWHERE</footer>
   </main>
