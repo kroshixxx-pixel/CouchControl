@@ -343,7 +343,6 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         elif action == "alt_tab": pyautogui.hotkey("alt", "tab")
         elif action in {"enter", "esc", "tab", "space", "backspace"}:
             pyautogui.press({"esc": "esc"}.get(action, action))
-        await query.answer("Клавиша отправлена")
         return
 
     if data == "keyboard:type":
@@ -366,7 +365,7 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             pyautogui.hotkey(*keys)
         return
 
-    if data.startswith("volume:")
+    if data.startswith("volume:"):
         action = data.split(":", 1)[1]
         press_vk({"up": VK["volume_up"], "down": VK["volume_down"], "mute": VK["volume_mute"]}[action])
         return
