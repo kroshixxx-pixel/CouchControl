@@ -1,41 +1,37 @@
-# CouchControl — установка
+# CouchControl — Installation
 
-CouchControl позволяет управлять своим Windows-компьютером через личного Telegram-бота.
+CouchControl lets you control your Windows PC through your personal Telegram bot.
 
-## Установка
+## Install
 
-1. Запусти CouchControl-Setup.exe.
-2. Введи токен своего Telegram-бота, созданного через @BotFather.
-3. Введи свой числовой Telegram User ID.
-4. Дождись завершения установки.
-5. Открой CouchControl в Telegram и отправь боту /start.
+1. Run `CouchControl-Setup.exe`.
+2. Enter the token for your Telegram bot, created with @BotFather.
+3. Enter your numeric Telegram User ID.
+4. Wait for setup to finish.
+5. Open your bot in Telegram and send `/start`.
 
-Установщик самостоятельно подготовит отдельную копию Python, установит необходимые библиотеки и сохранит настройки Telegram. Удалять или менять системный Python не требуется.
+The installer prepares a private Python runtime, installs the required packages and saves your Telegram settings. It does not need to remove or modify other system-wide Python installations.
 
-По умолчанию CouchControl добавляется в автозапуск Windows. При необходимости эту настройку можно снять на соответствующем шаге установщика.
+The installer offers an option to start CouchControl automatically when you sign in to Windows.
 
-## Клавиатура
+## Mini App
 
-Во вкладке «Клавиатура» доступны отдельные кнопки стрелок вверх, вниз, влево и вправо.
+The Mini App interface is in the `CouchControl` folder. The screenshot request is sent to the bot. The touchpad requires a configured HTTPS tunnel to reach the local PC API. Keyboard and action tiles are currently placeholders.
 
-## Кнопка Mini App
+## Stop the bot
 
-Кнопка «Открыть CouchControl» под полем ввода удаляется при следующем /start. Код Mini App сохранён в проекте.
+Use the stop option in the Telegram bot menu. After confirmation, CouchControl exits. To connect again, launch CouchControl on the PC using its Start menu or desktop shortcut. Stopping the bot does not shut down Windows.
 
-## Остановка бота
+## Requirements
 
-В главном меню Telegram есть кнопка «🛑 Выключить бота». После подтверждения CouchControl завершит работу. Чтобы подключиться снова, запусти CouchControl на компьютере через ярлык в меню «Пуск» или на рабочем столе. Кнопка останавливает только бота, а не выключает компьютер.
+- 64-bit Windows 10 or Windows 11.
+- Internet access during installation and while using the bot.
+- Your own Telegram bot and its token.
+- Your numeric Telegram User ID.
 
-## Что необходимо
+## Important
 
-- Windows 10 или Windows 11, 64-bit.
-- Подключение к интернету во время установки: установщик загружает Python и необходимые библиотеки.
-- Собственный Telegram-бот и его токен.
-- Ваш Telegram User ID.
-
-## Важно
-
-- Не передавайте токен бота другим людям и не публикуйте файл .env.
-- Компьютер должен быть включён и подключён к интернету, чтобы бот отвечал.
-- Для управления компьютером локальное приложение CouchControl должно работать на этом компьютере.
-- Если установка завершилась ошибкой, журнал находится в %TEMP%\CouchControl-install-diagnostic.log. Журнал установки Python: %TEMP%\CouchControl-Python-install.log.
+- Never share your bot token or publish the `.env` file.
+- The PC must be powered on and connected to the internet for the bot to respond.
+- CouchControl must be running on the PC being controlled.
+- If installation fails, inspect `%TEMP%\\CouchControl-install-diagnostic.log` and, if present, `%TEMP%\\CouchControl-Python-install.log`.
