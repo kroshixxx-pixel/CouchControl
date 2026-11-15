@@ -2,10 +2,10 @@
   const tg = window.Telegram?.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
   const tabs = [...document.querySelectorAll(".tab")];
-  const titles = {touchpad:"Тачпад",keyboard:"Клавиатура",buttons:"Кнопки"};
+  const titles = {touchpad:"Мышь",keyboard:"Клавиатура",buttons:"Кнопки"};
   const counts = {touchpad:"01 / 03",keyboard:"02 / 03",buttons:"03 / 03"};
   const hints = {
-    touchpad:"Проведи пальцем по области, чтобы двигать курсор на ПК.",
+    touchpad:"Удерживай одну из восьми стрелок, чтобы перемещать курсор на ПК.",
     keyboard:"Клавиши подключим следующим этапом.",
     buttons:"Кнопки управления подключим следующим этапом."
   };
@@ -21,7 +21,6 @@
   const input = document.getElementById("api-url");
   const status = document.getElementById("connection-status");
   const connect = document.getElementById("connect-btn");
-  const touchpad = document.getElementById("touchpad");
   let apiBase = localStorage.getItem("couchcontrol_api") || new URLSearchParams(location.search).get("api") || "";
   if (apiBase) input.value = apiBase;
 
@@ -53,36 +52,52 @@
     }
   });
 
-  let active = false;
-  let lastX = 0, lastY = 0, lastSent = 0;
-  let pendingX = 0, pendingY = 0;
-  let sending = false;
-  const flushMove = async () => {
-    if (sending || (!pendingX && !pendingY)) return;
-    const dx = pendingX, dy = pendingY;
-    pendingX = 0; pendingY = 0; sending = true;
-    try { await request("/api/mouse/move", {dx, dy}); }
-    catch (error) { status.textContent = error.message; }
-    finally { sending = false; }
+  const speedControl = document.getElementById("mouse-speed");
+  let moveTimer = null;
+  let moveInFlight = false;
+  let activeDirection = null;
+
+  const stopMoving = () => {
+    if (moveTimer) clearInterval(moveTimer);
+    moveTimer = null;
+    activeDirection = null;
   };
 
-  touchpad.addEventListener("pointerdown", event => {
-    active = true; lastX = event.clientX; lastY = event.clientY;
-    touchpad.setPointerCapture(event.pointerId);
-    if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+  const sendDirection = async () => {
+    if (!activeDirection || moveInFlight) return;
+    moveInFlight = true;
+    const step = Number(speedControl.value || 28);
+    try {
+      await request("/api/mouse/move", {
+        dx: activeDirection.dx * step,
+        dy: activeDirection.dy * step
+      });
+    } catch (error) {
+      status.textContent = error.message;
+      stopMoving();
+    } finally {
+      moveInFlight = false;
+    }
+  };
+
+  document.querySelectorAll(".direction-btn").forEach(button => {
+    button.addEventListener("pointerdown", event => {
+      event.preventDefault();
+      stopMoving();
+      if (button.dataset.stop === "true") return;
+      activeDirection = {dx:Number(button.dataset.dx),dy:Number(button.dataset.dy)};
+      button.setPointerCapture?.(event.pointerId);
+      if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+      sendDirection();
+      moveTimer = setInterval(sendDirection, 110);
+    });
+    button.addEventListener("pointerup", stopMoving);
+    button.addEventListener("pointercancel", stopMoving);
+    button.addEventListener("lostpointercapture", stopMoving);
+    button.addEventListener("contextmenu", event => event.preventDefault());
   });
-  touchpad.addEventListener("pointermove", event => {
-    if (!active) return;
-    const dx = (event.clientX - lastX) * 1.7;
-    const dy = (event.clientY - lastY) * 1.7;
-    lastX = event.clientX; lastY = event.clientY;
-    pendingX += dx; pendingY += dy;
-    const now = performance.now();
-    if (now - lastSent > 32) { lastSent = now; flushMove(); }
-  });
-  const endPointer = () => { active = false; flushMove(); };
-  touchpad.addEventListener("pointerup", endPointer);
-  touchpad.addEventListener("pointercancel", endPointer);
+  window.addEventListener("pointerup", stopMoving);
+  window.addEventListener("blur", stopMoving);
 
   document.querySelectorAll(".mouse-btn").forEach(button => {
     button.addEventListener("click", async () => {
