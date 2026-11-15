@@ -18,6 +18,18 @@
     document.getElementById("demo-hint").textContent = hints[mode];
   }));
 
+  const screenshotButton = document.getElementById("send-screenshot");
+  const screenshotStatus = document.getElementById("screenshot-status");
+  screenshotButton?.addEventListener("click", () => {
+    if (!tg?.initData || typeof tg.sendData !== "function") {
+      screenshotStatus.textContent = "Открой Mini App кнопкой внизу чата с ботом.";
+      return;
+    }
+    screenshotButton.disabled = true;
+    screenshotStatus.textContent = "Отправляем запрос боту…";
+    tg.sendData(JSON.stringify({action:"screenshot"}));
+  });
+
   const input = document.getElementById("api-url");
   const status = document.getElementById("connection-status");
   const connect = document.getElementById("connect-btn");
