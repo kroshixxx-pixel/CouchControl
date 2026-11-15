@@ -71,8 +71,8 @@ def main_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("🖱 Mouse", callback_data="page:mouse"),
          InlineKeyboardButton("⌨️ Keyboard", callback_data="page:keyboard")],
         [InlineKeyboardButton("🔊 Volume", callback_data="page:volume"),
-         InlineKeyboardButton("🎵 Медиа", callback_data="page:media")],
-        [InlineKeyboardButton("📸 Скриншот", callback_data="action:screenshot"),
+         InlineKeyboardButton("🎵 Media", callback_data="page:media")],
+        [InlineKeyboardButton("📸 Screenshot", callback_data="action:screenshot"),
          InlineKeyboardButton("🗂 Apps", callback_data="page:apps")],
         [InlineKeyboardButton("⏻ Power", callback_data="page:power"),
          InlineKeyboardButton("ℹ️ Status", callback_data="action:status")],
@@ -236,11 +236,11 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     pages = {
         "home": ("🛋 CouchControl\nChoose what you want to control:", main_keyboard),
         "mouse": ("🖱 Mouse control\nUse the arrows to move the cursor.", mouse_keyboard),
-        "keyboard": ("⌨️ Keyboard\nTap “Type text”, then send a message. Текст будет вставлен в активное окно ПК.", keyboard_keyboard),
+        "keyboard": ("⌨️ Keyboard\nTap “Type text”, then send a message. The text will be pasted into the active PC window.", keyboard_keyboard),
         "volume": ("🔊 Volume control", volume_keyboard),
         "media": ("🎵 Media controls", media_keyboard),
         "apps": ("🗂 Launch apps", apps_keyboard),
-        "power": ("⏻ Power компьютера", power_keyboard),
+        "power": ("⏻ PC power", power_keyboard),
     }
     if data.startswith("page:"):
         page = data.split(":", 1)[1]
@@ -301,10 +301,10 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         label, command = APP_COMMANDS[key]
         try:
             subprocess.Popen(command, shell=False)
-            await query.message.reply_text(f"✅ Запускаю: {label}")
+            await query.message.reply_text(f"✅ Launching: {label}")
         except Exception:
             log.exception("App launch failed")
-            await query.message.reply_text(f"Не удалось запустить: {label}")
+            await query.message.reply_text(f"Could not launch: {label}")
         return
 
     if data == "action:screenshot":
@@ -378,7 +378,7 @@ def main() -> None:
     app.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_data))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_input))
     app.add_error_handler(error_handler)
-    log.info("CouchControl started. Allowed Telegram user ID: %s", ALLOWED_USER_ID or "не настроен")
+    log.info("CouchControl started. Allowed Telegram user ID: %s", ALLOWED_USER_ID or "not configured")
     app.run_polling(drop_pending_updates=True)
 
 
