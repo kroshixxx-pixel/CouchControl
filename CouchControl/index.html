@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#090d1d">
+  <title>CouchControl</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand-mark">C</div>
+      <div class="brand"><strong>CouchControl</strong><span>REMOTE CONSOLE</span></div>
+      <div class="connection"><i></i><span>ДЕМО</span></div>
+    </header>
+
+    <section class="screen-card">
+      <div class="screen-head"><span>ЭКРАН КОМПЬЮТЕРА</span><span class="live-dot">● PREVIEW</span></div>
+      <div class="screen">
+        <div class="screen-glow"></div>
+        <div class="monitor-icon"><span></span></div>
+        <strong>Трансляция появится здесь</strong>
+        <p>Подключим компьютер на следующем этапе</p>
+      </div>
+      <div class="screen-foot"><span><b></b> ПК не подключён</span><span>— : —</span></div>
+    </section>
+
+    <section class="control-panel">
+      <div class="panel-title"><div><span class="eyebrow">УПРАВЛЕНИЕ</span><h1 id="mode-title">Тачпад</h1></div><span class="mode-count">01 / 03</span></div>
+      <nav class="tabs" aria-label="Режим управления">
+        <button class="tab active" data-mode="touchpad"><span>⌖</span>Тачпад</button>
+        <button class="tab" data-mode="keyboard"><span>⌨</span>Клавиатура</button>
+        <button class="tab" data-mode="buttons"><span>◈</span>Кнопки</button>
+      </nav>
+
+      <section class="mode-view active" id="touchpad-view">
+        <div class="touchpad" id="touchpad">
+          <div class="touch-grid"></div><div class="touch-cross">＋</div>
+          <span>ОБЛАСТЬ ТАЧПАДА</span>
+          <small>Проведи пальцем по области</small>
+        </div>
+        <div class="mouse-actions">
+          <button class="mouse-btn" type="button">ЛЕВАЯ КНОПКА</button>
+          <button class="mouse-btn" type="button">ПРАВАЯ КНОПКА</button>
+        </div>
+      </section>
+
+      <section class="mode-view" id="keyboard-view">
+        <div class="keyboard-note">Клавиатура появится здесь после подключения ПК</div>
+        <div class="key-row"><button class="key">Esc</button><button class="key">Tab</button><button class="key wide">⌫</button><button class="key">↵</button></div>
+        <div class="key-row"><button class="key">Ctrl</button><button class="key">Alt</button><button class="key space">Пробел</button></div>
+      </section>
+
+      <section class="mode-view" id="buttons-view">
+        <div class="action-grid">
+          <button class="action-tile"><span>◀</span><b>Назад</b></button>
+          <button class="action-tile"><span>Ⅱ</span><b>Пауза</b></button>
+          <button class="action-tile"><span>▶</span><b>Воспроизвести</b></button>
+          <button class="action-tile"><span>🔊</span><b>Громкость</b></button>
+          <button class="action-tile"><span>⌂</span><b>Рабочий стол</b></button>
+          <button class="action-tile"><span>⏻</span><b>Питание</b></button>
+        </div>
+      </section>
+      <p class="demo-hint" id="demo-hint">Интерфейс готов. Управление ПК пока не подключено.</p>
+    </section>
+    <footer>COUCHCONTROL <span>•</span> CONTROL FROM ANYWHERE</footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
