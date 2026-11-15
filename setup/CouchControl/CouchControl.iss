@@ -23,7 +23,7 @@ UninstallDisplayIcon={app}\CouchControl.ico
 
 [Tasks]
 Name: "desktopicon"; Description: "Создать ярлык на рабочем столе"; GroupDescription: "Дополнительные параметры:"; Flags: checkedonce
-Name: "autostart"; Description: "Запускать CouchControl автоматически при входе в Windows"; GroupDescription: "Дополнительные параметры:"; Flags: unchecked
+Name: "autostart"; Description: "Запускать CouchControl автоматически при входе в Windows"; GroupDescription: "Дополнительные параметры:"; Flags: checkedonce
 
 [Files]
 Source: "bot.py"; DestDir: "{app}"; Flags: ignoreversion
@@ -36,6 +36,9 @@ Source: ".env.example"; DestDir: "{app}"; Flags: ignoreversion
 Name: "{group}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe"; Parameters: """{app}\bot.py"""; WorkingDir: "{app}"
 Name: "{autodesktop}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe"; Parameters: """{app}\bot.py"""; WorkingDir: "{app}"; Tasks: desktopicon
 Name: "{userstartup}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe"; Parameters: """{app}\bot.py"""; WorkingDir: "{app}"; Tasks: autostart
+
+[Run]
+Filename: "{app}\\.venv\\Scripts\\pythonw.exe"; Parameters: """{app}\\bot.py"""; WorkingDir: "{app}"; Description: "Запустить CouchControl сейчас"; Flags: nowait postinstall skipifsilent
 
 [Code]
 var
