@@ -1,5 +1,6 @@
 import asyncio
 import io
+import json
 import logging
 import os
 import subprocess
@@ -9,7 +10,8 @@ from ctypes import wintypes
 import pyautogui
 import pyperclip
 from dotenv import load_dotenv
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, WebAppInfo
+from web_server import start_web_server, stop_web_server
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, Update, WebAppInfo
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
@@ -65,8 +67,6 @@ def authorized(update: Update) -> bool:
 
 def main_keyboard() -> InlineKeyboardMarkup:
     rows = []
-    if WEB_APP_URL.startswith("https://"):
-        rows.append([InlineKeyboardButton("📱 Открыть CouchControl", web_app=WebAppInfo(url=WEB_APP_URL))])
     rows.extend([
         [InlineKeyboardButton("🖱 Мышка", callback_data="page:mouse"),
          InlineKeyboardButton("⌨️ Клавиатура", callback_data="page:keyboard")],
@@ -78,6 +78,14 @@ def main_keyboard() -> InlineKeyboardMarkup:
          InlineKeyboardButton("ℹ️ Статус", callback_data="action:status")],
     ])
     return InlineKeyboardMarkup(rows)
+
+
+def webapp_reply_keyboard() -> ReplyKeyboardMarkup:
+    return ReplyKeyboardMarkup(
+        [[KeyboardButton("📱 Открыть CouchControl", web_app=WebAppInfo(url=WEB_APP_URL))]],
+        resize_keyboard=True,
+        is_persistent=True,
+    )
 
 
 def back_keyboard() -> InlineKeyboardMarkup:
@@ -144,6 +152,34 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.effective_message.reply_text(
         "🛋 CouchControl\nВыбери, чем управлять:", reply_markup=main_keyboard()
     )
+    if WEB_APP_URL.startswith("https://"):
+        await update.effective_message.reply_text(
+            "Для открытия Mini App и отправки скриншотов используй кнопку ниже.",
+            reply_markup=webapp_reply_keyboard(),
+        )
+
+
+async def web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not authorized(update) or not update.effective_message or not update.effective_message.web_app_data:
+        return
+    try:
+        payload = json.loads(update.effective_message.web_app_data.data)
+    except (ValueError, TypeError):
+        return
+    if payload.get("action") != "screenshot":
+        return
+    try:
+        image = pyautogui.screenshot()
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG", quality=75, optimize=True)
+        buffer.seek(0)
+        await update.effective_message.reply_photo(
+            photo=buffer,
+            caption="📸 Скриншот экрана компьютера из CouchControl",
+        )
+    except Exception:
+        log.exception("Mini App screenshot failed")
+        await update.effective_message.reply_text("Не удалось сделать скриншот экрана ПК.")
 
 
 async def myid(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -331,11 +367,15 @@ def main() -> None:
     if os.name != "nt":
         raise SystemExit("CouchControl Agent рассчитан на Windows 10/11.")
 
-    app = Application.builder().token(TOKEN).build()
+    app = (Application.builder().token(TOKEN)
+           .post_init(start_web_server)
+           .post_shutdown(stop_web_server)
+           .build())
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("myid", myid))
     app.add_handler(CommandHandler("cancel", cancel))
     app.add_handler(CallbackQueryHandler(callback))
+    app.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_data))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_input))
     app.add_error_handler(error_handler)
     log.info("CouchControl запущен. Разрешённый Telegram user ID: %s", ALLOWED_USER_ID or "не настроен")
