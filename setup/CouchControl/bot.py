@@ -9,7 +9,7 @@ from ctypes import wintypes
 import pyautogui
 import pyperclip
 from dotenv import load_dotenv
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update, WebAppInfo
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
@@ -21,6 +21,7 @@ from telegram.ext import (
 
 load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN", "").strip()
+WEB_APP_URL = os.getenv("WEB_APP_URL", "https://kroshixxx-pixel.github.io/CouchControl/").strip()
 try:
     ALLOWED_USER_ID = int(os.getenv("ALLOWED_USER_ID", "0").strip() or "0")
 except ValueError:
@@ -63,7 +64,10 @@ def authorized(update: Update) -> bool:
 
 
 def main_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([
+    rows = []
+    if WEB_APP_URL.startswith("https://"):
+        rows.append([InlineKeyboardButton("📱 Открыть CouchControl", web_app=WebAppInfo(url=WEB_APP_URL))])
+    rows.extend([
         [InlineKeyboardButton("🖱 Мышка", callback_data="page:mouse"),
          InlineKeyboardButton("⌨️ Клавиатура", callback_data="page:keyboard")],
         [InlineKeyboardButton("🔊 Громкость", callback_data="page:volume"),
@@ -73,6 +77,7 @@ def main_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("⏻ Питание", callback_data="page:power"),
          InlineKeyboardButton("ℹ️ Статус", callback_data="action:status")],
     ])
+    return InlineKeyboardMarkup(rows)
 
 
 def back_keyboard() -> InlineKeyboardMarkup:
