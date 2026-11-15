@@ -1,5 +1,5 @@
 #define MyAppName "CouchControl"
-#define MyAppVersion "1.0.2"
+#define MyAppVersion "1.0.3"
 #define MyAppPublisher "CouchControl"
 
 [Setup]
@@ -19,7 +19,6 @@ WizardStyle=modern
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0
-UninstallDisplayIcon={app}\CouchControl.ico
 
 [Tasks]
 Name: "desktopicon"; Description: "Создать ярлык на рабочем столе"; GroupDescription: "Дополнительные параметры:"; Flags: checkedonce
@@ -70,7 +69,7 @@ begin
     'Введите данные вашего Telegram-бота',
     'Токен получите у @BotFather командой /newbot. ' +
     'Ваш числовой Telegram User ID можно узнать у @userinfobot.');
-  TelegramPage.Add('Bot Token:', False);
+  TelegramPage.Add('Bot Token:', True);
   TelegramPage.Add('Telegram User ID:', False);
 end;
 
