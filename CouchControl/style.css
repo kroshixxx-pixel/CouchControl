@@ -16,3 +16,8 @@
 .direction-btn:active{background:linear-gradient(145deg,#536ee8,#8156e8);transform:scale(.96)}
 .direction-btn.stop-btn{background:linear-gradient(145deg,#514080,#35295d);color:#dcd2ff;font-size:22px}
 .mouse-help{text-align:center;color:#8492b8;font-size:9px;margin:11px 0 0}
+
+/* Screenshot request button */
+.screenshot-btn{position:relative;z-index:2;margin-top:7px;border:0;border-radius:10px;padding:11px 18px;background:linear-gradient(110deg,#456ff0,#8055e9);color:#fff;font-size:11px;font-weight:700;box-shadow:0 5px 16px #5d63ee44}
+.screenshot-btn:disabled{opacity:.65}
+.screenshot-screen small{position:relative;z-index:1;color:#9ba8cb;font-size:9px}
