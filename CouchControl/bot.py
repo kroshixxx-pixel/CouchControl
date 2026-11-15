@@ -39,9 +39,9 @@ pyautogui.PAUSE = 0.04
 
 # Only these known applications can be launched. No arbitrary shell commands.
 APP_COMMANDS = {
-    "notepad": ("Блокнот", ["notepad.exe"]),
-    "calculator": ("Калькулятор", ["calc.exe"]),
-    "explorer": ("Проводник", ["explorer.exe"]),
+    "notepad": ("Notepad", ["notepad.exe"]),
+    "calculator": ("Calculator", ["calc.exe"]),
+    "explorer": ("File Explorer", ["explorer.exe"]),
     "paint": ("Paint", ["mspaint.exe"]),
 }
 
@@ -68,93 +68,93 @@ def authorized(update: Update) -> bool:
 def main_keyboard() -> InlineKeyboardMarkup:
     rows = []
     rows.extend([
-        [InlineKeyboardButton("🖱 Мышка", callback_data="page:mouse"),
-         InlineKeyboardButton("⌨️ Клавиатура", callback_data="page:keyboard")],
-        [InlineKeyboardButton("🔊 Громкость", callback_data="page:volume"),
+        [InlineKeyboardButton("🖱 Mouse", callback_data="page:mouse"),
+         InlineKeyboardButton("⌨️ Keyboard", callback_data="page:keyboard")],
+        [InlineKeyboardButton("🔊 Volume", callback_data="page:volume"),
          InlineKeyboardButton("🎵 Медиа", callback_data="page:media")],
         [InlineKeyboardButton("📸 Скриншот", callback_data="action:screenshot"),
-         InlineKeyboardButton("🗂 Приложения", callback_data="page:apps")],
-        [InlineKeyboardButton("⏻ Питание", callback_data="page:power"),
-         InlineKeyboardButton("ℹ️ Статус", callback_data="action:status")],
+         InlineKeyboardButton("🗂 Apps", callback_data="page:apps")],
+        [InlineKeyboardButton("⏻ Power", callback_data="page:power"),
+         InlineKeyboardButton("ℹ️ Status", callback_data="action:status")],
     ])
     return InlineKeyboardMarkup(rows)
 
 
 def webapp_reply_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
-        [[KeyboardButton("📱 Открыть CouchControl", web_app=WebAppInfo(url=WEB_APP_URL))]],
+        [[KeyboardButton("📱 Open CouchControl", web_app=WebAppInfo(url=WEB_APP_URL))]],
         resize_keyboard=True,
         is_persistent=True,
     )
 
 
 def back_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")]])
+    return InlineKeyboardMarkup([[InlineKeyboardButton("⬅️ Main menu", callback_data="page:home")]])
 
 
 def mouse_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("↖", callback_data="mouse:ul"), InlineKeyboardButton("⬆️", callback_data="mouse:u"), InlineKeyboardButton("↗", callback_data="mouse:ur")],
-        [InlineKeyboardButton("⬅️", callback_data="mouse:l"), InlineKeyboardButton("🖱 ЛКМ", callback_data="mouse:left"), InlineKeyboardButton("➡️", callback_data="mouse:r")],
+        [InlineKeyboardButton("⬅️", callback_data="mouse:l"), InlineKeyboardButton("🖱 Left click", callback_data="mouse:left"), InlineKeyboardButton("➡️", callback_data="mouse:r")],
         [InlineKeyboardButton("↙", callback_data="mouse:dl"), InlineKeyboardButton("⬇️", callback_data="mouse:d"), InlineKeyboardButton("↘", callback_data="mouse:dr")],
-        [InlineKeyboardButton("ПКМ", callback_data="mouse:right"), InlineKeyboardButton("Колесо ↑", callback_data="mouse:su"), InlineKeyboardButton("Колесо ↓", callback_data="mouse:sd")],
-        [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
+        [InlineKeyboardButton("Right click", callback_data="mouse:right"), InlineKeyboardButton("Scroll up", callback_data="mouse:su"), InlineKeyboardButton("Scroll down", callback_data="mouse:sd")],
+        [InlineKeyboardButton("⬅️ Main menu", callback_data="page:home")],
     ])
 
 
 def keyboard_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("✍️ Ввести текст", callback_data="keyboard:type")],
+        [InlineKeyboardButton("✍️ Type text", callback_data="keyboard:type")],
         [InlineKeyboardButton("Enter", callback_data="key:enter"), InlineKeyboardButton("Esc", callback_data="key:esc"), InlineKeyboardButton("Tab", callback_data="key:tab")],
         [InlineKeyboardButton("Ctrl+C", callback_data="key:copy"), InlineKeyboardButton("Ctrl+V", callback_data="key:paste"), InlineKeyboardButton("Alt+Tab", callback_data="key:alt_tab")],
-        [InlineKeyboardButton("Пробел", callback_data="key:space"), InlineKeyboardButton("Backspace", callback_data="key:backspace")],
-        [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
+        [InlineKeyboardButton("Space", callback_data="key:space"), InlineKeyboardButton("Backspace", callback_data="key:backspace")],
+        [InlineKeyboardButton("⬅️ Main menu", callback_data="page:home")],
     ])
 
 
 def volume_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("🔉 −", callback_data="volume:down"), InlineKeyboardButton("🔊 +", callback_data="volume:up")],
-        [InlineKeyboardButton("🔇 Вкл./выкл. звук", callback_data="volume:mute")],
-        [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
+        [InlineKeyboardButton("🔇 Mute / unmute", callback_data="volume:mute")],
+        [InlineKeyboardButton("⬅️ Main menu", callback_data="page:home")],
     ])
 
 
 def media_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("⏮ Назад", callback_data="media:previous"), InlineKeyboardButton("⏯ Пауза/старт", callback_data="media:play_pause"), InlineKeyboardButton("⏭ Далее", callback_data="media:next")],
-        [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
+        [InlineKeyboardButton("⏮ Previous", callback_data="media:previous"), InlineKeyboardButton("⏯ Play / pause", callback_data="media:play_pause"), InlineKeyboardButton("⏭ Next", callback_data="media:next")],
+        [InlineKeyboardButton("⬅️ Main menu", callback_data="page:home")],
     ])
 
 
 def apps_keyboard() -> InlineKeyboardMarkup:
     rows = [[InlineKeyboardButton(label, callback_data=f"app:{key}")] for key, (label, _cmd) in APP_COMMANDS.items()]
-    rows.append([InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")])
+    rows.append([InlineKeyboardButton("⬅️ Main menu", callback_data="page:home")])
     return InlineKeyboardMarkup(rows)
 
 
 def power_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔒 Заблокировать ПК", callback_data="power:lock")],
-        [InlineKeyboardButton("⏻ Выключить…", callback_data="power:ask_shutdown"), InlineKeyboardButton("🔄 Перезагрузить…", callback_data="power:ask_restart")],
-        [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
+        [InlineKeyboardButton("🔒 Lock PC", callback_data="power:lock")],
+        [InlineKeyboardButton("⏻ Shut down…", callback_data="power:ask_shutdown"), InlineKeyboardButton("🔄 Restart…", callback_data="power:ask_restart")],
+        [InlineKeyboardButton("⬅️ Main menu", callback_data="page:home")],
     ])
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not authorized(update):
         await update.effective_message.reply_text(
-            "Доступ пока не настроен. Для первичной настройки отправь /myid, "
-            "впиши свой ID в ALLOWED_USER_ID в файле .env и перезапусти бота."
+            "Access is not configured yet. To set it up, send /myid, "
+            "put your ID in ALLOWED_USER_ID in the .env file, and restart the bot."
         )
         return
     context.user_data["awaiting_text"] = False
     await update.effective_message.reply_text(
-        "🛋 CouchControl\nВыбери, чем управлять:", reply_markup=main_keyboard()
+        "🛋 CouchControl\nChoose what you want to control:", reply_markup=main_keyboard()
     )
     if WEB_APP_URL.startswith("https://"):
         await update.effective_message.reply_text(
-            "Для открытия Mini App и отправки скриншотов используй кнопку ниже.",
+            "Use the button below to open the Mini App and request screenshots.",
             reply_markup=webapp_reply_keyboard(),
         )
 
@@ -175,26 +175,26 @@ async def web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         buffer.seek(0)
         await update.effective_message.reply_photo(
             photo=buffer,
-            caption="📸 Скриншот экрана компьютера из CouchControl",
+            caption="📸 PC screenshot from CouchControl",
         )
     except Exception:
         log.exception("Mini App screenshot failed")
-        await update.effective_message.reply_text("Не удалось сделать скриншот экрана ПК.")
+        await update.effective_message.reply_text("Could not take a PC screenshot.")
 
 
 async def myid(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     chat = update.effective_chat
     if user and chat and chat.type == "private":
-        await update.effective_message.reply_text(f"Твой Telegram user ID: {user.id}\nДобавь это число в ALLOWED_USER_ID в файле .env.")
+        await update.effective_message.reply_text(f"Your Telegram user ID: {user.id}\nAdd this number to ALLOWED_USER_ID in the .env file.")
     elif update.effective_message:
-        await update.effective_message.reply_text("Открой бота в личном чате и отправь /myid.")
+        await update.effective_message.reply_text("Open the bot in a private chat and send /myid.")
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     context.user_data["awaiting_text"] = False
     if authorized(update):
-        await update.effective_message.reply_text("Ввод текста отменён.", reply_markup=main_keyboard())
+        await update.effective_message.reply_text("Text input cancelled.", reply_markup=main_keyboard())
 
 
 async def text_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -206,16 +206,16 @@ async def text_input(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     if not text:
         return
     if len(text) > 2000:
-        await update.effective_message.reply_text("Слишком длинный текст. Максимум — 2000 символов.")
+        await update.effective_message.reply_text("The text is too long. Maximum length: 2,000 characters.")
         return
     try:
         pyperclip.copy(text)
         pyautogui.hotkey("ctrl", "v")
         context.user_data["awaiting_text"] = False
-        await update.effective_message.reply_text("✅ Текст вставлен в активное окно ПК.", reply_markup=keyboard_keyboard())
+        await update.effective_message.reply_text("✅ Text pasted into the active PC window.", reply_markup=keyboard_keyboard())
     except Exception as exc:
         log.exception("Text paste failed")
-        await update.effective_message.reply_text(f"Не удалось вставить текст: {exc}")
+        await update.effective_message.reply_text(f"Could not paste the text: {exc}")
 
 
 def press_vk(code: int) -> None:
@@ -228,19 +228,19 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not query:
         return
     if not authorized(update):
-        await query.answer("Нет доступа", show_alert=True)
+        await query.answer("Access denied", show_alert=True)
         return
     await query.answer()
     data = query.data or ""
 
     pages = {
-        "home": ("🛋 CouchControl\nВыбери, чем управлять:", main_keyboard),
-        "mouse": ("🖱 Управление мышью\nНажимай стрелки для перемещения курсора.", mouse_keyboard),
-        "keyboard": ("⌨️ Клавиатура\nНажми «Ввести текст», затем отправь сообщение. Текст будет вставлен в активное окно ПК.", keyboard_keyboard),
-        "volume": ("🔊 Управление громкостью", volume_keyboard),
-        "media": ("🎵 Управление мультимедиа", media_keyboard),
-        "apps": ("🗂 Запуск приложений", apps_keyboard),
-        "power": ("⏻ Питание компьютера", power_keyboard),
+        "home": ("🛋 CouchControl\nChoose what you want to control:", main_keyboard),
+        "mouse": ("🖱 Mouse control\nUse the arrows to move the cursor.", mouse_keyboard),
+        "keyboard": ("⌨️ Keyboard\nTap “Type text”, then send a message. Текст будет вставлен в активное окно ПК.", keyboard_keyboard),
+        "volume": ("🔊 Volume control", volume_keyboard),
+        "media": ("🎵 Media controls", media_keyboard),
+        "apps": ("🗂 Launch apps", apps_keyboard),
+        "power": ("⏻ Power компьютера", power_keyboard),
     }
     if data.startswith("page:"):
         page = data.split(":", 1)[1]
@@ -276,12 +276,12 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         elif action == "alt_tab": pyautogui.hotkey("alt", "tab")
         elif action in {"enter", "esc", "tab", "space", "backspace"}:
             pyautogui.press({"esc": "esc"}.get(action, action))
-        await query.answer("Клавиша отправлена")
+        await query.answer("Key sent")
         return
 
     if data == "keyboard:type":
         context.user_data["awaiting_text"] = True
-        await query.message.reply_text("✍️ Отправь следующим сообщением текст, который нужно вставить на ПК. Для отмены — /cancel.")
+        await query.message.reply_text("✍️ Send the text you want to paste into the PC in your next message. Send /cancel to cancel.")
         return
 
     if data.startswith("volume:"):
@@ -313,25 +313,25 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             buffer = io.BytesIO()
             image.save(buffer, format="JPEG", quality=75)
             buffer.seek(0)
-            await query.message.reply_photo(photo=buffer, caption="📸 Текущий экран компьютера")
+            await query.message.reply_photo(photo=buffer, caption="📸 Current PC screen")
         except Exception:
             log.exception("Screenshot failed")
-            await query.message.reply_text("Не удалось сделать скриншот.")
+            await query.message.reply_text("Could not take a screenshot.")
         return
 
     if data == "action:status":
-        await query.message.reply_text("🟢 CouchControl работает. Компьютер доступен через Telegram.")
+        await query.message.reply_text("🟢 CouchControl is running. The PC is reachable through Telegram.")
         return
 
     if data in {"power:ask_shutdown", "power:ask_restart"}:
         action = "shutdown" if data.endswith("shutdown") else "restart"
-        label = "выключить" if action == "shutdown" else "перезагрузить"
+        label = "shut down" if action == "shutdown" else "restart"
         markup = InlineKeyboardMarkup([
-            [InlineKeyboardButton(f"Подтвердить: {label}", callback_data=f"power:confirm_{action}")],
-            [InlineKeyboardButton("Отмена", callback_data="page:power")],
+            [InlineKeyboardButton(f"Confirm: {label}", callback_data=f"power:confirm_{action}")],
+            [InlineKeyboardButton("Cancel", callback_data="page:power")],
         ])
         await query.message.reply_text(
-            f"⚠️ Точно {label} компьютер? Команда будет запланирована на 30 секунд, чтобы её можно было отменить.",
+            f"⚠️ Are you sure you want to {label} the PC? The action will be scheduled for 30 seconds so you can cancel it.",
             reply_markup=markup,
         )
         return
@@ -341,19 +341,19 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         flag = "/s" if action == "shutdown" else "/r"
         subprocess.Popen(["shutdown", flag, "/t", "30"], shell=False)
         await query.message.reply_text(
-            "⏳ Команда запланирована на 30 секунд. Если передумал, нажми отмену:",
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Отменить выключение/перезагрузку", callback_data="power:abort")]])
+            "⏳ The action is scheduled for 30 seconds. If you change your mind, tap cancel:",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Cancel shutdown / restart", callback_data="power:abort")]])
         )
         return
 
     if data == "power:abort":
         subprocess.Popen(["shutdown", "/a"], shell=False)
-        await query.message.reply_text("✅ Запланированная команда отменена.", reply_markup=power_keyboard())
+        await query.message.reply_text("✅ The scheduled action has been cancelled.", reply_markup=power_keyboard())
         return
 
     if data == "power:lock":
         ctypes.windll.user32.LockWorkStation()
-        await query.message.reply_text("🔒 Компьютер заблокирован.")
+        await query.message.reply_text("🔒 The PC is locked.")
         return
 
 
@@ -363,9 +363,9 @@ async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> N
 
 def main() -> None:
     if not TOKEN:
-        raise SystemExit("Не найден BOT_TOKEN. Заполни файл .env по образцу .env.example")
+        raise SystemExit("BOT_TOKEN was not found. Create the .env file using .env.example as a template.")
     if os.name != "nt":
-        raise SystemExit("CouchControl Agent рассчитан на Windows 10/11.")
+        raise SystemExit("CouchControl Agent is designed for Windows 10/11.")
 
     app = (Application.builder().token(TOKEN)
            .post_init(start_web_server)
@@ -378,7 +378,7 @@ def main() -> None:
     app.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, web_app_data))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_input))
     app.add_error_handler(error_handler)
-    log.info("CouchControl запущен. Разрешённый Telegram user ID: %s", ALLOWED_USER_ID or "не настроен")
+    log.info("CouchControl started. Allowed Telegram user ID: %s", ALLOWED_USER_ID or "не настроен")
     app.run_polling(drop_pending_updates=True)
 
 
