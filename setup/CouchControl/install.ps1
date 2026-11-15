@@ -2,9 +2,9 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
 $ProjectPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$PythonVersion = '3.12.10'
+$PythonVersion = '3.13.17'
 $PythonInstaller = Join-Path $env:TEMP "CouchControl-Python-$PythonVersion-amd64.exe"
-$PythonDir = Join-Path $ProjectPath 'Python312'
+$PythonDir = Join-Path $ProjectPath 'Python313'
 $PythonExe = Join-Path $PythonDir 'python.exe'
 $PythonwExe = Join-Path $PythonDir 'pythonw.exe'
 $VenvDir = Join-Path $ProjectPath '.venv'
@@ -64,10 +64,9 @@ try {
 
         Write-Host "Installing private Python into: $PythonDir"
 
-        # Explicitly request Install. Without /install, an already-registered Python
-        # bundle can select its default Repair action even when CouchControl's files
-        # are missing. Capture the actual Burn process exit code with Start-Process.
-        $pythonArguments = '/install /quiet InstallAllUsers=0 PrependPath=0 Include_launcher=0 Include_test=0 Include_pip=1 Shortcuts=0 "TargetDir={0}" "DefaultJustForMeTargetDir={0}" /log "{1}"' -f $PythonDir, $InstallLog
+        # Use a fresh CPython minor release so an older registered 3.12 bundle cannot
+        # redirect this install into its previous location. Capture Burn's real exit code.
+        $pythonArguments = '/quiet InstallAllUsers=0 PrependPath=0 Include_launcher=0 Include_test=0 Include_pip=1 Shortcuts=0 "TargetDir={0}" "DefaultJustForMeTargetDir={0}" /log "{1}"' -f $PythonDir, $InstallLog
         $pythonProcess = Start-Process -FilePath $PythonInstaller -ArgumentList $pythonArguments -Wait -PassThru -WindowStyle Hidden
         $pythonInstallExitCode = $pythonProcess.ExitCode
         Write-Host "Python installer exit code: $pythonInstallExitCode"
@@ -76,8 +75,8 @@ try {
             throw "The official Python installer failed with exit code $pythonInstallExitCode."
         }
 
-        # Python 3.12's documented per-user default is the fallback if TargetDir was not honored.
-        $defaultPythonDir = Join-Path $env:LOCALAPPDATA 'Programs\Python\Python312'
+        # Python 3.13's documented per-user default is the fallback if TargetDir was not honored.
+        $defaultPythonDir = Join-Path $env:LOCALAPPDATA 'Programs\Python\Python313'
         $candidateDirs = @($PythonDir, $defaultPythonDir)
         $foundPythonDir = $null
         foreach ($candidateDir in $candidateDirs) {
