@@ -170,6 +170,8 @@ def keyboard_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton("✍️ Ввести текст", callback_data="keyboard:type")],
         [InlineKeyboardButton("Enter", callback_data="key:enter"), InlineKeyboardButton("Esc", callback_data="key:esc"), InlineKeyboardButton("Tab", callback_data="key:tab")],
         [InlineKeyboardButton("Ctrl+C", callback_data="key:copy"), InlineKeyboardButton("Ctrl+V", callback_data="key:paste"), InlineKeyboardButton("Alt+Tab", callback_data="key:alt_tab")],
+        [InlineKeyboardButton("⬆️", callback_data="key:up")],
+        [InlineKeyboardButton("⬅️", callback_data="key:left"), InlineKeyboardButton("⬇️", callback_data="key:down"), InlineKeyboardButton("➡️", callback_data="key:right")],
         [InlineKeyboardButton("Пробел", callback_data="key:space"), InlineKeyboardButton("Backspace", callback_data="key:backspace")],
         [InlineKeyboardButton("⬅️ Главное меню", callback_data="page:home")],
     ])
@@ -338,7 +340,7 @@ async def callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if action == "copy": pyautogui.hotkey("ctrl", "c")
         elif action == "paste": pyautogui.hotkey("ctrl", "v")
         elif action == "alt_tab": pyautogui.hotkey("alt", "tab")
-        elif action in {"enter", "esc", "tab", "space", "backspace"}:
+        elif action in {"enter", "esc", "tab", "space", "backspace", "up", "down", "left", "right"}:
             pyautogui.press({"esc": "esc"}.get(action, action))
         return
 
