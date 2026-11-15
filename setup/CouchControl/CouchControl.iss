@@ -1,5 +1,5 @@
 #define MyAppName "CouchControl"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "CouchControl"
 
 [Setup]
@@ -27,8 +27,9 @@ Name: "autostart"; Description: "Запускать CouchControl автомат�
 
 [Files]
 Source: "bot.py"; DestDir: "{app}"; Flags: ignoreversion
+Source: "web_server.py"; DestDir: "{app}"; Flags: ignoreversion
 Source: "requirements.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "install.ps1"; DestDir: "{app}"; Flags: ignoreversion
+Source: "install.ps1"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: InstallRuntime
 Source: ".env.example"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
@@ -36,12 +37,28 @@ Name: "{group}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe"; Param
 Name: "{autodesktop}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe"; Parameters: """{app}\bot.py"""; WorkingDir: "{app}"; Tasks: desktopicon
 Name: "{userstartup}\CouchControl"; Filename: "{app}\.venv\Scripts\pythonw.exe"; Parameters: """{app}\bot.py"""; WorkingDir: "{app}"; Tasks: autostart
 
-[Run]
-Filename: "powershell.exe"; Parameters: "-NoLogo -NoProfile -ExecutionPolicy Bypass -File ""{app}\install.ps1"""; StatusMsg: "Загрузка Python и установка компонентов CouchControl..."; Flags: runhidden waituntilterminated
-
 [Code]
 var
   TelegramPage: TInputQueryWizardPage;
+
+procedure InstallRuntime;
+var
+  ResultCode: Integer;
+  PowerShellPath: String;
+  Parameters: String;
+begin
+  PowerShellPath := ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe');
+  Parameters := '-NoLogo -NoProfile -ExecutionPolicy Bypass -File "' +
+    ExpandConstant('{app}\install.ps1') + '"';
+
+  if not Exec(PowerShellPath, Parameters, ExpandConstant('{app}'),
+    SW_HIDE, ewWaitUntilTerminated, ResultCode) then
+    RaiseException('Не удалось запустить установку Python и компонентов CouchControl.');
+
+  if ResultCode <> 0 then
+    RaiseException('Установка CouchControl завершилась с ошибкой. Код: ' +
+      IntToStr(ResultCode) + '. Проверьте журнал в папке TEMP.');
+end;
 
 procedure InitializeWizard;
 begin
